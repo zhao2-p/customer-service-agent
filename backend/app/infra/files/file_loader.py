@@ -1,0 +1,49 @@
+import hashlib
+import os
+
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
+from langchain_core.documents import Document
+
+from backend.app.core.logger import logger
+
+
+def get_file_md5_hex(filepath: str) -> str | None:
+    if not os.path.exists(filepath):
+        logger.error("[md5] file not found: %s", filepath)
+        return None
+
+    if not os.path.isfile(filepath):
+        logger.error("[md5] path is not a file: %s", filepath)
+        return None
+
+    md5_obj = hashlib.md5()
+
+    try:
+        with open(filepath, "rb") as file:
+            while chunk := file.read(4096):
+                md5_obj.update(chunk)
+        return md5_obj.hexdigest()
+    except Exception as exc:
+        logger.error("[md5] failed for %s: %s", filepath, str(exc))
+        return None
+
+
+def listdir_with_allowed_type(path: str, allowed_types: tuple[str, ...]) -> tuple[str, ...]:
+    if not os.path.isdir(path):
+        logger.error("[listdir_with_allowed_type] %s is not a directory", path)
+        return tuple()
+
+    files: list[str] = []
+    for filename in os.listdir(path):
+        if filename.endswith(allowed_types):
+            files.append(os.path.join(path, filename))
+
+    return tuple(files)
+
+
+def pdf_loader(filepath: str, passwd=None) -> list[Document]:
+    return PyPDFLoader(filepath, passwd).load()
+
+
+def txt_loader(filepath: str) -> list[Document]:
+    return TextLoader(filepath, encoding="utf-8").load()

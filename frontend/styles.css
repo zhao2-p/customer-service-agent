@@ -1,0 +1,222 @@
+:root {
+  --bg: #f2efe8;
+  --panel: #fffaf2;
+  --panel-border: #d5c8b6;
+  --text: #1f1b16;
+  --muted: #6f6254;
+  --primary: #9d4f2d;
+  --primary-dark: #7d3e23;
+  --user-bubble: #ead7c0;
+  --assistant-bubble: #f7efe2;
+  --shadow: 0 18px 40px rgba(77, 49, 29, 0.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(157, 79, 45, 0.16), transparent 28%),
+    linear-gradient(160deg, #f5f0e6 0%, #ede4d4 100%);
+}
+
+.app-shell {
+  width: min(920px, calc(100vw - 32px));
+  margin: 32px auto;
+}
+
+.chat-panel {
+  border: 1px solid var(--panel-border);
+  border-radius: 24px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid rgba(213, 200, 182, 0.8);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+}
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 420px;
+  max-height: 62vh;
+  padding: 24px 28px;
+  overflow-y: auto;
+}
+
+.message {
+  max-width: 78%;
+  padding: 14px 16px;
+  border-radius: 18px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: var(--user-bubble);
+}
+
+.message.assistant {
+  align-self: flex-start;
+  background: var(--assistant-bubble);
+}
+
+.composer {
+  display: grid;
+  gap: 16px;
+  padding: 20px 28px 28px;
+  border-top: 1px solid rgba(213, 200, 182, 0.8);
+  background: rgba(255, 248, 239, 0.72);
+}
+
+.api-config,
+.question-box {
+  display: grid;
+  gap: 8px;
+}
+
+.api-config span,
+.question-box span {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cdbba4;
+  border-radius: 14px;
+  outline: none;
+  background: #fffdf9;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(157, 79, 45, 0.12);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.status-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.primary-btn,
+.ghost-btn {
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+}
+
+.primary-btn {
+  padding: 12px 22px;
+  color: #fff;
+  background: var(--primary);
+}
+
+.primary-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.ghost-btn {
+  padding: 10px 16px;
+  color: var(--text);
+  background: rgba(213, 200, 182, 0.34);
+}
+
+.ghost-btn:hover {
+  background: rgba(213, 200, 182, 0.56);
+}
+
+.primary-btn:disabled,
+.ghost-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    width: calc(100vw - 18px);
+    margin: 10px auto;
+  }
+
+  .chat-header,
+  .message-list,
+  .composer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .chat-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .message {
+    max-width: 100%;
+  }
+
+  .composer-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .primary-btn,
+  .ghost-btn {
+    width: 100%;
+  }
+}

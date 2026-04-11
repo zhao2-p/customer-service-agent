@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
 from typing import Optional
-from langchain_core.embeddings import Embeddings
-from langchain_community.chat_models.tongyi import BaseChatModel
+
+from langchain_community.chat_models.tongyi import BaseChatModel, ChatTongyi
 from langchain_community.embeddings import DashScopeEmbeddings
-from langchain_community.chat_models.tongyi import ChatTongyi
-from utils.config_handler import rag_conf
+from langchain_core.embeddings import Embeddings
+
+from backend.app.core.config import rag_conf
 
 
 class BaseModelFactory(ABC):
     @abstractmethod
     def generator(self) -> Optional[Embeddings | BaseChatModel]:
-        pass
+        raise NotImplementedError
 
 
 class ChatModelFactory(BaseModelFactory):

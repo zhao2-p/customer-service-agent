@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Agent 会话界面</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="chat-panel">
+      <header class="chat-header">
+        <div>
+          <p class="eyebrow">Frontend</p>
+          <h1>AI Agent 会话界面</h1>
+        </div>
+        <button id="clear-btn" class="ghost-btn" type="button">清空会话</button>
+      </header>
+
+      <section id="message-list" class="message-list">
+        <article class="message assistant">
+          <p>会话界面已就绪。输入问题后会通过前后端分离方式调用 FastAPI 接口。</p>
+        </article>
+      </section>
+
+      <form id="chat-form" class="composer">
+        <label class="api-config">
+          <span>后端地址</span>
+          <input id="api-base" type="text" value="http://127.0.0.1:8000" />
+        </label>
+
+        <label class="question-box">
+          <span>输入问题</span>
+          <textarea
+            id="query-input"
+            rows="4"
+            placeholder="例如：我现在的环境下应该怎么保养机器人？"
+          ></textarea>
+        </label>
+
+        <div class="composer-actions">
+          <p id="status-text" class="status-text">等待输入</p>
+          <button id="send-btn" class="primary-btn" type="submit">发送</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
