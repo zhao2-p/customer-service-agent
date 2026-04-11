@@ -9,7 +9,7 @@ from langgraph.types import Command
 from utils.logger_handler import logger
 
 
-@wrap_tool_call     # 在工具执行前执行
+@wrap_tool_call     # 在工具执行前执行，监控工具执行
 def monitor_tool(
         # 请求的数据封装
         request: ToolCallRequest,
