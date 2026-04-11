@@ -104,5 +104,5 @@ if __name__ == "__main__":
 
     # 本地调试入口。
     # 这里直接测试单轮问题是否能正常跑通。
-    for chunk in agent.execute_stream("我叫什么名字？"):
+    for chunk in agent.execute_stream("我现在的环境下应该怎么保养机器人？"):
         print(chunk, end="", flush=True)
