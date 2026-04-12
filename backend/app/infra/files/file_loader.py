@@ -8,6 +8,7 @@ from backend.app.core.logger import logger
 
 
 def get_file_md5_hex(filepath: str) -> str | None:
+    # 通过 MD5 判断文件是否已经入库，用来避免重复建立向量。
     if not os.path.exists(filepath):
         logger.error("[md5] file not found: %s", filepath)
         return None
@@ -29,6 +30,7 @@ def get_file_md5_hex(filepath: str) -> str | None:
 
 
 def listdir_with_allowed_type(path: str, allowed_types: tuple[str, ...]) -> tuple[str, ...]:
+    # 只返回知识库允许的文件类型，例如 txt / pdf。
     if not os.path.isdir(path):
         logger.error("[listdir_with_allowed_type] %s is not a directory", path)
         return tuple()
@@ -42,6 +44,7 @@ def listdir_with_allowed_type(path: str, allowed_types: tuple[str, ...]) -> tupl
 
 
 def pdf_loader(filepath: str, passwd=None) -> list[Document]:
+    # LangChain 文档加载器会把文件转成统一的 Document 结构。
     return PyPDFLoader(filepath, passwd).load()
 
 

@@ -1,4 +1,0 @@
-2026-04-12 00:05:20,386 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 2 messages
-2026-04-12 00:05:20,386 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 你好
-2026-04-12 00:06:21,136 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 2 messages
-2026-04-12 00:06:21,140 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 你好

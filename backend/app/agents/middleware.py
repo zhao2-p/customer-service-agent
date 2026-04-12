@@ -16,12 +16,14 @@ def monitor_tool(
     request: ToolCallRequest,
     handler: Callable[[ToolCallRequest], ToolMessage | Command],
 ) -> ToolMessage | Command:
+    # 这个中间件会包住每一次工具调用，主要用于日志和少量上下文标记。
     logger.info("[tool monitor] running tool=%s args=%s", request.tool_call["name"], request.tool_call["args"])
 
     try:
         result = handler(request)
         logger.info("[tool monitor] tool succeeded: %s", request.tool_call["name"])
 
+        # 一旦调用了报告场景的工具，就在运行时上下文里打上 `report=True` 标记。
         if request.tool_call["name"] == "fill_context_for_report":
             request.runtime.context["report"] = True
 
@@ -33,6 +35,7 @@ def monitor_tool(
 
 @before_model
 def log_before_model(state: AgentState, runtime: Runtime):
+    # 在每次调用大模型之前记录一下消息数量和最新消息，便于排查上下文问题。
     logger.info("[log_before_model] calling model with %s messages", len(state["messages"]))
     logger.debug(
         "[log_before_model] latest=%s | %s",
@@ -44,6 +47,7 @@ def log_before_model(state: AgentState, runtime: Runtime):
 
 @dynamic_prompt
 def report_prompt_switch(request: ModelRequest):
+    # 根据运行时上下文切换不同的 system prompt。
     if request.runtime.context.get("report", False):
         return load_report_prompts()
 

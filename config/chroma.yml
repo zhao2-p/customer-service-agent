@@ -1,8 +1,8 @@
 collection_name: agent
-persist_directory: chroma_db
+persist_directory: backend/chroma_db
 k: 3
-data_path: data
-md5_hex_store: chroma_db/md5.text
+data_path: backend/data
+md5_hex_store: backend/chroma_db/md5.text
 allow_knowledge_file_type: ["txt", "pdf"]
 
 chunk_size: 200

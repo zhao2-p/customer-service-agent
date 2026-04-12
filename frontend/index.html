@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+  <!-- 页面主体就是一个简单的聊天面板：消息区 + 输入区。 -->
   <main class="app-shell">
     <section class="chat-panel">
       <header class="chat-header">
@@ -17,12 +18,14 @@
         <button id="clear-btn" class="ghost-btn" type="button">清空会话</button>
       </header>
 
+      <!-- 这里是聊天消息列表，JS 会把用户和助手消息动态插进来。 -->
       <section id="message-list" class="message-list">
         <article class="message assistant">
-          <p>会话界面已就绪。输入问题后会通过前后端分离方式调用 FastAPI 接口。</p>
+          <p>会话界面已就绪。输入问题后会通过前后端分离的方式调用 FastAPI 接口。</p>
         </article>
       </section>
 
+      <!-- 表单提交后不会整页刷新，而是由 app.js 拦截并发起 fetch 请求。 -->
       <form id="chat-form" class="composer">
         <label class="api-config">
           <span>后端地址</span>

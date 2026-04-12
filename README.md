@@ -37,20 +37,19 @@
 ```text
 AI大模型RAG与智能体开发_Agent项目/
 ├─ backend/
-│  └─ app/
-│     ├─ api/          # FastAPI 接口层
-│     ├─ agents/       # Agent 编排、工具、中间件
-│     ├─ services/     # RAG、Prompt 等业务服务
-│     ├─ infra/        # 模型、向量库、文件加载等基础设施
-│     ├─ core/         # 配置、路径、日志
-│     └─ main.py       # FastAPI 启动入口
+│  ├─ app/
+│  │  ├─ api/          # FastAPI 接口层
+│  │  ├─ agents/       # Agent 编排、工具、中间件
+│  │  ├─ services/     # RAG、Prompt 等业务服务
+│  │  ├─ infra/        # 模型、向量库、文件加载等基础设施
+│  │  ├─ core/         # 配置、路径、日志
+│  │  └─ main.py       # FastAPI 启动入口
+│  ├─ data/            # 知识库原始数据、外部数据
+│  ├─ chroma_db/       # Chroma 持久化向量库
+│  └─ logs/            # 运行日志
 ├─ frontend/           # 简单前端会话页面
 ├─ config/             # YAML 配置文件
-├─ data/               # 知识库原始数据、外部数据
 ├─ prompts/            # Prompt 模板
-├─ chroma_db/          # Chroma 持久化向量库
-├─ logs/               # 运行日志
-├─ md5.text            # 知识文件去重记录
 ├─ requirements.txt    # Python 依赖
 └─ README.md
 ```

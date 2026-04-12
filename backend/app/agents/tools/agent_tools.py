@@ -27,35 +27,37 @@ month_arr = [
     "2025-12",
 ]
 
+# 这里用内存字典模拟外部系统数据，第一次读取 CSV 后会缓存在进程里。
 external_data: dict[str, dict[str, dict[str, str]]] = {}
 
 
-@tool(description="从向量存储中检索参考资料")
+@tool(description="从向量存储中检索参考资料，并基于检索结果生成总结回答")
 def rag_summarize(query: str) -> str:
     return rag.rag_summarize(query)
 
 
-@tool(description="获取指定城市的天气，以消息字符串形式返回")
+@tool(description="获取指定城市的天气，并以字符串形式返回")
 def get_weather(city: str) -> str:
-    return f"城市{city}天气为晴天，气温26摄氏度，空气湿度50%，南风2级，AQI21，未来2小时降雨概率极低"
+    return f"城市{city}天气为晴天，气温26摄氏度，空气湿度50%，南风3级，AQI21，未来24小时降雨概率极低"
 
 
-@tool(description="获取用户所在城市名称，以纯字符串形式返回")
+@tool(description="获取用户所在城市名称，并以纯字符串形式返回")
 def get_user_location() -> str:
     return random.choice(["深圳", "合肥", "杭州"])
 
 
-@tool(description="获取用户ID，以纯字符串形式返回")
+@tool(description="获取用户ID，并以纯字符串形式返回")
 def get_user_id() -> str:
     return random.choice(user_ids)
 
 
-@tool(description="获取当前月份，以纯字符串形式返回")
+@tool(description="获取当前月份，并以纯字符串形式返回")
 def get_current_month() -> str:
     return random.choice(month_arr)
 
 
 def generate_external_data():
+    # 第一次调用时把 CSV 读入内存，后续直接复用，避免重复读文件。
     if external_data:
         return
 

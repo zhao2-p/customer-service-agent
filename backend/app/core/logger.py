@@ -2,10 +2,10 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-from backend.app.core.paths import PROJECT_ROOT
+from backend.app.core.paths import BACKEND_DIR
 
 
-LOG_ROOT = PROJECT_ROOT / "logs"
+LOG_ROOT = BACKEND_DIR / "logs"
 LOG_ROOT.mkdir(exist_ok=True)
 
 DEFAULT_LOG_FORMAT = logging.Formatter(

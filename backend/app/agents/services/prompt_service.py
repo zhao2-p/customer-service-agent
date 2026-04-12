@@ -4,6 +4,7 @@ from backend.app.core.paths import get_abs_path
 
 
 def _load_prompt(config_key: str, log_prefix: str) -> str:
+    # Prompt 文件路径来自配置文件，这里统一做读取和异常处理。
     try:
         prompt_path = get_abs_path(prompts_conf[config_key])
     except KeyError as exc:
@@ -19,12 +20,15 @@ def _load_prompt(config_key: str, log_prefix: str) -> str:
 
 
 def load_system_prompts() -> str:
+    # Agent 默认使用的系统提示词。
     return _load_prompt("main_prompt_path", "load_system_prompts")
 
 
 def load_rag_prompts() -> str:
+    # RAG 总结链使用的提示词。
     return _load_prompt("rag_summarize_prompt_path", "load_rag_prompts")
 
 
 def load_report_prompts() -> str:
+    # 报告生成场景专用提示词。
     return _load_prompt("report_prompt_path", "load_report_prompts")

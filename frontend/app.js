@@ -6,6 +6,7 @@ const statusText = document.getElementById("status-text");
 const sendButton = document.getElementById("send-btn");
 const clearButton = document.getElementById("clear-btn");
 
+// 前端自己维护一份对话历史，后续每次请求都会把它带给后端。
 const history = [];
 
 function createMessage(role, content = "") {
@@ -26,6 +27,7 @@ function renderMessage(role, content) {
 }
 
 function setSubmitting(isSubmitting) {
+  // 请求发送后禁用输入和按钮，避免重复提交。
   sendButton.disabled = isSubmitting;
   clearButton.disabled = isSubmitting;
   queryInput.disabled = isSubmitting;
@@ -33,6 +35,7 @@ function setSubmitting(isSubmitting) {
 }
 
 function readSseChunk(buffer) {
+  // 后端返回的是 SSE 文本流，每个事件之间用空行 `\n\n` 分隔。
   const separator = "\n\n";
   const index = buffer.indexOf(separator);
   if (index === -1) {
@@ -45,6 +48,7 @@ function readSseChunk(buffer) {
 }
 
 chatForm.addEventListener("submit", async (event) => {
+  // 阻止浏览器默认表单提交，改为用 JS 发异步请求。
   event.preventDefault();
 
   const query = queryInput.value.trim();
@@ -61,6 +65,7 @@ chatForm.addEventListener("submit", async (event) => {
   queryInput.value = "";
   setSubmitting(true);
 
+  // 先放一个占位消息，后面随着 SSE 事件到来再更新它。
   const assistantMessage = createMessage("assistant", "正在思考...");
   let finalAnswer = "";
 
@@ -108,11 +113,13 @@ chatForm.addEventListener("submit", async (event) => {
         const payloadText = dataLine.slice(6);
         const eventData = JSON.parse(payloadText);
 
+        // snapshot 事件表示“生成中”的临时状态。
         if (eventData.type === "snapshot") {
           assistantMessage.paragraph.textContent = eventData.content;
           statusText.textContent = "模型正在生成...";
         }
 
+        // final 事件才是真正要展示并写入历史的最终答案。
         if (eventData.type === "final") {
           finalAnswer = eventData.content?.trim() || "后端返回了空结果。";
           assistantMessage.paragraph.textContent = finalAnswer;
@@ -138,6 +145,7 @@ chatForm.addEventListener("submit", async (event) => {
 });
 
 clearButton.addEventListener("click", () => {
+  // 清空前端历史，并把消息列表恢复成初始状态。
   history.length = 0;
   messageList.innerHTML = "";
   renderMessage("assistant", "会话已清空，可以开始新的问题。");

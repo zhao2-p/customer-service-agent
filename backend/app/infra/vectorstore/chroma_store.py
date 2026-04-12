@@ -18,16 +18,18 @@ from backend.app.infra.llm.factory import embed_model
 
 class VectorStoreService:
     def __init__(self):
-        # 向量库和 md5 记录都统一落在项目根目录，避免从不同工作目录启动时重复生成。
+        # Chroma 的持久化目录和去重文件路径都来自配置。
         persist_directory = get_abs_path(chroma_conf["persist_directory"])
         self.md5_file_path = get_abs_path(chroma_conf["md5_hex_store"])
 
+        # Chroma 是当前项目的向量数据库。
         self.vector_store = Chroma(
             collection_name=chroma_conf["collection_name"],
             embedding_function=embed_model,
             persist_directory=persist_directory,
         )
 
+        # 大文档先切块，再写入向量库；否则检索粒度会太粗。
         self.spliter = RecursiveCharacterTextSplitter(
             chunk_size=chroma_conf["chunk_size"],
             chunk_overlap=chroma_conf["chunk_overlap"],
@@ -36,10 +38,11 @@ class VectorStoreService:
         )
 
     def get_retriever(self):
+        # Retriever 是对向量库的高层封装，LangChain 下游通常直接消费它。
         return self.vector_store.as_retriever(search_kwargs={"k": chroma_conf["k"]})
 
     def load_document(self):
-        # 使用 md5 记录已入库文件，避免重复切片和重复写入向量库。
+        # 用 md5 记录已经入库的文件，避免重复切片和重复写入向量库。
         def check_md5_hex(md5_for_check: str | None):
             if not md5_for_check:
                 return False
@@ -91,7 +94,7 @@ class VectorStoreService:
                     logger.warning("[load_document] empty chunks after split: %s", path)
                     continue
 
-                # Chroma 会自动持久化到 `persist_directory`，这里不需要额外手动保存。
+                # Chroma 会自动持久化到 `persist_directory`，这里不需要手动保存。
                 self.vector_store.add_documents(split_document)
                 save_md5_hex(md5_hex)
                 logger.info("[load_document] indexed: %s", path)
