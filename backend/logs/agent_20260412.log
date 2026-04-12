@@ -50,3 +50,11 @@
 2026-04-12 16:46:38,192 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=HumanMessage | 请记住我叫张三
 2026-04-12 16:46:42,094 - agent - INFO - middleware.py:39 - [log_before_model] calling model with 3 messages
 2026-04-12 16:46:42,094 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=HumanMessage | 我叫什么名字
+2026-04-12 17:11:11,622 - agent - INFO - middleware.py:39 - [log_before_model] calling model with 1 messages
+2026-04-12 17:11:11,622 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=HumanMessage | 小户型适合哪些扫地机器人
+2026-04-12 17:11:17,162 - agent - INFO - middleware.py:20 - [tool monitor] running tool=rag_summarize args={'query': '小户型 扫地机器人 选购建议'}
+2026-04-12 17:11:20,360 - agent - INFO - middleware.py:24 - [tool monitor] tool succeeded: rag_summarize
+2026-04-12 17:11:20,362 - agent - INFO - middleware.py:39 - [log_before_model] calling model with 3 messages
+2026-04-12 17:11:20,362 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=ToolMessage | 小户型选购扫地机器人应优先考虑轻便灵活的机型，基础激光导航即可满足需求（如米家1C、石头T4）；吸力建议≥3000Pa，需支持调节以适配不同地面；核心关注参数包括导航类型、吸力大小、电池容量、尘盒/水箱容量。
+2026-04-12 18:44:15,338 - agent - INFO - middleware.py:39 - [log_before_model] calling model with 1 messages
+2026-04-12 18:44:15,343 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=HumanMessage | 你好

@@ -6,14 +6,14 @@ from backend.app.core.paths import get_abs_path
 def _load_prompt(config_key: str, log_prefix: str) -> str:
     # Prompt 文件路径来自配置文件，这里统一做读取和异常处理。
     try:
-        prompt_path = get_abs_path(prompts_conf[config_key])
+        prompt_path = get_abs_path(prompts_conf[config_key])    # 获取配置文件里的路径。
     except KeyError as exc:
         logger.error("[%s] missing config key: %s", log_prefix, config_key)
         raise exc
 
     try:
-        with open(prompt_path, "r", encoding="utf-8") as file:
-            return file.read()
+        with open(prompt_path, "r", encoding="utf-8") as file:  # 根据路径读取文件。
+            return file.read()                                  # 返回文件内容。
     except Exception as exc:
         logger.error("[%s] failed to load prompt: %s", log_prefix, str(exc))
         raise exc

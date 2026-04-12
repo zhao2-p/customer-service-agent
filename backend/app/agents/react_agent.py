@@ -57,8 +57,8 @@ class ReactAgent:
 if __name__ == "__main__":
     agent = ReactAgent()
     test_session_id = "react-agent-local-test"
-    for chunk in agent.execute_stream("请记住我叫张三", test_session_id):
+    for chunk in agent.execute_stream("小户型适合哪些扫地机器人", test_session_id):
         print(chunk, end="", flush=True)
 
-    for chunk in agent.execute_stream("我叫什么名字", test_session_id):
-        print(chunk, end="", flush=True)
+    # for chunk in agent.execute_stream("我叫什么名字", test_session_id):
+    #     print(chunk, end="", flush=True)

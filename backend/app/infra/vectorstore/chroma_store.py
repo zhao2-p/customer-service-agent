@@ -16,7 +16,7 @@ from backend.app.infra.files.file_loader import (
 from backend.app.infra.llm.factory import embed_model
 
 
-class VectorStoreService:
+class VectorStoreService:       #向量存储服务
     def __init__(self):
         # Chroma 的持久化目录和去重文件路径都来自配置。
         persist_directory = get_abs_path(chroma_conf["persist_directory"])

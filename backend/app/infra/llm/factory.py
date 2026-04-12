@@ -18,13 +18,13 @@ class BaseModelFactory(ABC):
 class ChatModelFactory(BaseModelFactory):
     def generator(self) -> Optional[Embeddings | BaseChatModel]:
         # 聊天模型供 Agent 和 RAG 总结链使用。
-        return ChatTongyi(model=rag_conf["chat_model_name"])
+        return ChatTongyi(model=rag_conf["chat_model_name"])    # 返回 ChatTongyi 对象
 
 
 class EmbeddingsFactory(BaseModelFactory):
     def generator(self) -> Optional[Embeddings | BaseChatModel]:
         # 向量模型负责把文本转成 embedding，供 Chroma 检索使用。
-        return DashScopeEmbeddings(model=rag_conf["embedding_model_name"])
+        return DashScopeEmbeddings(model=rag_conf["embedding_model_name"])  # 返回 DashScopeEmbeddings 对象
 
 
 # 这里直接生成全局单例，方便各模块按需复用。
