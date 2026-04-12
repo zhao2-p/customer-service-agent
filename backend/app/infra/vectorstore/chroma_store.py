@@ -19,8 +19,8 @@ from backend.app.infra.llm.factory import embed_model
 class VectorStoreService:       #向量存储服务
     def __init__(self):
         # Chroma 的持久化目录和去重文件路径都来自配置。
-        persist_directory = get_abs_path(chroma_conf["persist_directory"])
-        self.md5_file_path = get_abs_path(chroma_conf["md5_hex_store"])
+        persist_directory = get_abs_path(chroma_conf["persist_directory"])      # 向量库目录
+        self.md5_file_path = get_abs_path(chroma_conf["md5_hex_store"])     # md5 缓存文件路径
 
         # Chroma 是当前项目的向量数据库。
         self.vector_store = Chroma(
@@ -44,15 +44,19 @@ class VectorStoreService:       #向量存储服务
     def load_document(self):
         # 用 md5 记录已经入库的文件，避免重复切片和重复写入向量库。
         def check_md5_hex(md5_for_check: str | None):
+            # 如果md5 为空，则不进行去重
             if not md5_for_check:
                 return False
 
+            # 如果 md5 文件不存在，则创建一个空文件
             if not os.path.exists(self.md5_file_path):
                 open(self.md5_file_path, "w", encoding="utf-8").close()
                 return False
 
+            # 检查 md5 是否已经存在
             with open(self.md5_file_path, "r", encoding="utf-8") as file:
                 for line in file.readlines():
+                    # 如果找到，则返回 True
                     if line.strip() == md5_for_check:
                         return True
             return False
@@ -65,6 +69,7 @@ class VectorStoreService:       #向量存储服务
                 file.write(md5_for_check + "\n")
 
         def get_file_documents(read_path: str) -> list[Document]:
+            # 根据文件后缀名，选择对应的加载器，加载器会把文件转成 Document 列表。
             if read_path.endswith("txt"):
                 return txt_loader(read_path)
             if read_path.endswith("pdf"):
@@ -73,22 +78,23 @@ class VectorStoreService:       #向量存储服务
 
         allowed_files_path = listdir_with_allowed_type(
             get_abs_path(chroma_conf["data_path"]),
-            tuple(chroma_conf["allow_knowledge_file_type"]),
+            tuple(chroma_conf["allow_knowledge_file_type"])
         )
 
         for path in allowed_files_path:
-            md5_hex = get_file_md5_hex(path)
+            md5_hex = get_file_md5_hex(path)      # 获取文件的 md5
 
-            if check_md5_hex(md5_hex):
+            if check_md5_hex(md5_hex):      # 检查文件是否已经入库，如果为True则表示已经入库，则跳过本次循环
                 logger.info("[load_document] file already indexed: %s", path)
                 continue
 
             try:
-                documents = get_file_documents(path)
+                documents = get_file_documents(path)    # 将路径path下的文件转换为 Document 结构
                 if not documents:
                     logger.warning("[load_document] empty documents: %s", path)
                     continue
 
+                # 大文档先切块，再写入向量库
                 split_document = self.spliter.split_documents(documents)
                 if not split_document:
                     logger.warning("[load_document] empty chunks after split: %s", path)

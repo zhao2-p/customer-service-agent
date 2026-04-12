@@ -58,3 +58,15 @@
 2026-04-12 17:11:20,362 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=ToolMessage | 小户型选购扫地机器人应优先考虑轻便灵活的机型，基础激光导航即可满足需求（如米家1C、石头T4）；吸力建议≥3000Pa，需支持调节以适配不同地面；核心关注参数包括导航类型、吸力大小、电池容量、尘盒/水箱容量。
 2026-04-12 18:44:15,338 - agent - INFO - middleware.py:39 - [log_before_model] calling model with 1 messages
 2026-04-12 18:44:15,343 - agent - DEBUG - middleware.py:40 - [log_before_model] latest=HumanMessage | 你好
+2026-04-12 19:12:08,815 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\扫地机器人100问.pdf
+2026-04-12 19:12:13,362 - agent - INFO - chroma_store.py:103 - [load_document] indexed: E:\Project\customer_service_agent\backend\data\扫地机器人100问2.txt
+2026-04-12 19:12:19,470 - agent - INFO - chroma_store.py:103 - [load_document] indexed: E:\Project\customer_service_agent\backend\data\扫拖一体机器人100问.txt
+2026-04-12 19:12:29,069 - agent - INFO - chroma_store.py:103 - [load_document] indexed: E:\Project\customer_service_agent\backend\data\故障排除.txt
+2026-04-12 19:12:34,145 - agent - INFO - chroma_store.py:103 - [load_document] indexed: E:\Project\customer_service_agent\backend\data\维护保养.txt
+2026-04-12 19:12:38,107 - agent - INFO - chroma_store.py:103 - [load_document] indexed: E:\Project\customer_service_agent\backend\data\选购指南.txt
+2026-04-12 19:13:20,870 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\扫地机器人100问.pdf
+2026-04-12 19:13:20,871 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\扫地机器人100问2.txt
+2026-04-12 19:13:20,871 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\扫拖一体机器人100问.txt
+2026-04-12 19:13:20,872 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\故障排除.txt
+2026-04-12 19:13:20,873 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\维护保养.txt
+2026-04-12 19:13:20,874 - agent - INFO - chroma_store.py:86 - [load_document] file already indexed: E:\Project\customer_service_agent\backend\data\选购指南.txt
