@@ -9,7 +9,7 @@ from backend.app.core.logger import logger
 from backend.app.core.paths import get_abs_path
 from backend.app.infra.llm.factory import chat_model
 from backend.app.infra.vectorstore.chroma_store import VectorStoreService
-from backend.app.services.prompt_service import load_rag_prompts
+from backend.app.agents.services.prompt_service import load_rag_prompts
 
 
 class RagSummarizeService:

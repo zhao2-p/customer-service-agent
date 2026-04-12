@@ -109,3 +109,34 @@
 2026-04-11 22:07:26,304 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 你好
 2026-04-11 22:07:36,270 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 6 messages
 2026-04-11 22:07:36,270 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 你好
+2026-04-11 22:20:25,446 - agent - INFO - rag_service.py:34 - [RAG] vector store is not initialized, start loading documents
+2026-04-11 22:20:28,641 - agent - INFO - chroma_store.py:97 - [load_document] indexed: E:\Project\AI大模型RAG与智能体开发_Agent项目\data\扫地机器人100问.pdf
+2026-04-11 22:20:32,751 - agent - INFO - chroma_store.py:97 - [load_document] indexed: E:\Project\AI大模型RAG与智能体开发_Agent项目\data\扫地机器人100问2.txt
+2026-04-11 22:20:36,728 - agent - INFO - chroma_store.py:97 - [load_document] indexed: E:\Project\AI大模型RAG与智能体开发_Agent项目\data\扫拖一体机器人100问.txt
+2026-04-11 22:20:43,971 - agent - INFO - chroma_store.py:97 - [load_document] indexed: E:\Project\AI大模型RAG与智能体开发_Agent项目\data\故障排除.txt
+2026-04-11 22:20:48,271 - agent - INFO - chroma_store.py:97 - [load_document] indexed: E:\Project\AI大模型RAG与智能体开发_Agent项目\data\维护保养.txt
+2026-04-11 22:20:51,968 - agent - INFO - chroma_store.py:97 - [load_document] indexed: E:\Project\AI大模型RAG与智能体开发_Agent项目\data\选购指南.txt
+2026-04-11 22:25:49,495 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 2 messages
+2026-04-11 22:25:49,495 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 小户型适合哪些扫地机器人？
+2026-04-11 22:25:55,050 - agent - INFO - middleware.py:19 - [tool monitor] running tool=rag_summarize args={'query': '小户型 扫地机器人 选购建议'}
+2026-04-11 22:25:57,803 - agent - INFO - middleware.py:23 - [tool monitor] tool succeeded: rag_summarize
+2026-04-11 22:25:57,811 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 4 messages
+2026-04-11 22:25:57,811 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=ToolMessage | 小户型选购扫地机器人应优先考虑轻便灵活的机型，基础激光导航即可满足需求（如米家1C、石头T4）；吸力建议≥3000Pa，若地面有地毯则需≥4000Pa，且吸力可调节更佳；导航技术推荐激光导航，定位精准、抗干扰强。
+2026-04-11 22:26:24,975 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 2 messages
+2026-04-11 22:26:24,975 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 请问我叫什么名字？
+2026-04-11 23:40:41,379 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 1 messages
+2026-04-11 23:40:41,379 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 我现在的环境下应该怎么保养机器人？
+2026-04-11 23:40:45,331 - agent - INFO - middleware.py:19 - [tool monitor] running tool=get_user_location args={}
+2026-04-11 23:40:45,332 - agent - INFO - middleware.py:23 - [tool monitor] tool succeeded: get_user_location
+2026-04-11 23:40:45,333 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 3 messages
+2026-04-11 23:40:45,333 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=ToolMessage | 深圳
+2026-04-11 23:40:49,543 - agent - INFO - middleware.py:19 - [tool monitor] running tool=get_weather args={'city': '深圳'}
+2026-04-11 23:40:49,547 - agent - INFO - middleware.py:23 - [tool monitor] tool succeeded: get_weather
+2026-04-11 23:40:49,549 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 5 messages
+2026-04-11 23:40:49,549 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=ToolMessage | 城市深圳天气为晴天，气温26摄氏度，空气湿度50%，南风2级，AQI21，未来2小时降雨概率极低
+2026-04-11 23:40:56,499 - agent - INFO - middleware.py:19 - [tool monitor] running tool=rag_summarize args={'query': '深圳夏季日常环境下的扫拖机器人保养建议'}
+2026-04-11 23:41:00,544 - agent - INFO - middleware.py:23 - [tool monitor] tool succeeded: rag_summarize
+2026-04-11 23:41:00,544 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 7 messages
+2026-04-11 23:41:00,544 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=ToolMessage | 深圳夏季日常环境下，扫拖机器人保养建议包括：每日使用后用干软布擦拭机身外壳，去除灰尘和水渍；每次清扫完成后及时清理防撞条缝隙的毛发、线头；每日检查边刷旋转情况，若卡顿立即停机清理；使用后将清扫模式调至“待机”以减少电量消耗；每月检查拖地模组接口，确保无灰尘、杂物且连接顺畅；每周检查充电座电源适配器，确认无发热、异响。
+2026-04-11 23:41:44,778 - agent - INFO - middleware.py:36 - [log_before_model] calling model with 2 messages
+2026-04-11 23:41:44,778 - agent - DEBUG - middleware.py:37 - [log_before_model] latest=HumanMessage | 你好

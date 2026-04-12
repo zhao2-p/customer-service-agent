@@ -3,10 +3,10 @@ import random
 
 from langchain_core.tools import tool
 
+from backend.app.agents.services.rag_service import RagSummarizeService
 from backend.app.core.config import agent_conf
 from backend.app.core.logger import logger
 from backend.app.core.paths import get_abs_path
-from backend.app.services.rag_service import RagSummarizeService
 
 
 rag = RagSummarizeService()

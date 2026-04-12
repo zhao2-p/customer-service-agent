@@ -1,15 +1,13 @@
-import json
-
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
-from backend.app.agents.react_agent import ReactAgent
+from backend.app.services.chat_service import ChatService
 
 
 router = APIRouter(prefix="/chat", tags=["chat"])
-# 先复用单例 Agent，后续如果引入会话隔离或依赖注入，再改成工厂/Provider。
-agent = ReactAgent()
+# 路由层只负责接收请求并把处理委托给应用服务。
+chat_service = ChatService()
 
 
 class ChatMessage(BaseModel):
@@ -24,19 +22,6 @@ class ChatRequest(BaseModel):
 
 @router.post("/stream")
 def chat_stream(request: ChatRequest):
+    # 将 Pydantic 模型转换成 agent 可消费的对话历史结构。
     history = [message.model_dump() for message in request.history]
-
-    def event_stream():
-        final_answer = ""
-        yield f"data: {json.dumps({'type': 'snapshot', 'content': '正在思考...'}, ensure_ascii=False)}\n\n"
-
-        for chunk in agent.execute_stream(request.query, history):
-            snapshot = chunk.strip()
-            if not snapshot:
-                continue
-
-            final_answer = snapshot
-
-        yield f"data: {json.dumps({'type': 'final', 'content': final_answer}, ensure_ascii=False)}\n\n"
-
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+    return StreamingResponse(chat_service.event_stream(request.query, history), media_type="text/event-stream")

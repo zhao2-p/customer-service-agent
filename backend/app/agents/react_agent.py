@@ -2,6 +2,7 @@ from langchain.agents import create_agent
 from typing import Generator
 
 from backend.app.agents.middleware import log_before_model, monitor_tool, report_prompt_switch
+from backend.app.agents.services.prompt_service import load_system_prompts
 from backend.app.agents.tools.agent_tools import (
     fetch_external_data,
     fill_context_for_report,
@@ -12,7 +13,6 @@ from backend.app.agents.tools.agent_tools import (
     rag_summarize,
 )
 from backend.app.infra.llm.factory import chat_model
-from backend.app.services.prompt_service import load_system_prompts
 
 
 class ReactAgent:
