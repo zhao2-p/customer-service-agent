@@ -6,8 +6,35 @@ const statusText = document.getElementById("status-text");
 const sendButton = document.getElementById("send-btn");
 const clearButton = document.getElementById("clear-btn");
 
-// 前端自己维护一份对话历史，后续每次请求都会把它带给后端。
-const history = [];
+const SESSION_STORAGE_KEY = "chat-session-id";
+
+function createSessionId() {
+  if (window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+
+  return `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function getOrCreateSessionId() {
+  const savedSessionId = window.localStorage.getItem(SESSION_STORAGE_KEY);
+  if (savedSessionId) {
+    return savedSessionId;
+  }
+
+  const newSessionId = createSessionId();
+  window.localStorage.setItem(SESSION_STORAGE_KEY, newSessionId);
+  return newSessionId;
+}
+
+function resetSessionId() {
+  const newSessionId = createSessionId();
+  window.localStorage.setItem(SESSION_STORAGE_KEY, newSessionId);
+  return newSessionId;
+}
+
+// 前端不再维护完整 history，只保存用于绑定后端短期记忆的 session_id。
+let sessionId = getOrCreateSessionId();
 
 function createMessage(role, content = "") {
   const article = document.createElement("article");
@@ -27,7 +54,6 @@ function renderMessage(role, content) {
 }
 
 function setSubmitting(isSubmitting) {
-  // 请求发送后禁用输入和按钮，避免重复提交。
   sendButton.disabled = isSubmitting;
   clearButton.disabled = isSubmitting;
   queryInput.disabled = isSubmitting;
@@ -35,7 +61,6 @@ function setSubmitting(isSubmitting) {
 }
 
 function readSseChunk(buffer) {
-  // 后端返回的是 SSE 文本流，每个事件之间用空行 `\n\n` 分隔。
   const separator = "\n\n";
   const index = buffer.indexOf(separator);
   if (index === -1) {
@@ -48,7 +73,6 @@ function readSseChunk(buffer) {
 }
 
 chatForm.addEventListener("submit", async (event) => {
-  // 阻止浏览器默认表单提交，改为用 JS 发异步请求。
   event.preventDefault();
 
   const query = queryInput.value.trim();
@@ -58,15 +82,13 @@ chatForm.addEventListener("submit", async (event) => {
   }
 
   const apiBase = apiBaseInput.value.trim().replace(/\/$/, "");
-  const payload = { query, history };
+  const payload = { query, session_id: sessionId };
 
   renderMessage("user", query);
-  history.push({ role: "user", content: query });
   queryInput.value = "";
   setSubmitting(true);
 
-  // 先放一个占位消息，后面随着 SSE 事件到来再更新它。
-  const assistantMessage = createMessage("assistant", "正在思考...");
+  const assistantMessage = createMessage("assistant", "正在思考中...");
   let finalAnswer = "";
 
   try {
@@ -113,13 +135,11 @@ chatForm.addEventListener("submit", async (event) => {
         const payloadText = dataLine.slice(6);
         const eventData = JSON.parse(payloadText);
 
-        // snapshot 事件表示“生成中”的临时状态。
         if (eventData.type === "snapshot") {
           assistantMessage.paragraph.textContent = eventData.content;
           statusText.textContent = "模型正在生成...";
         }
 
-        // final 事件才是真正要展示并写入历史的最终答案。
         if (eventData.type === "final") {
           finalAnswer = eventData.content?.trim() || "后端返回了空结果。";
           assistantMessage.paragraph.textContent = finalAnswer;
@@ -132,12 +152,9 @@ chatForm.addEventListener("submit", async (event) => {
       finalAnswer = assistantMessage.paragraph.textContent.trim() || "后端返回了空结果。";
       assistantMessage.paragraph.textContent = finalAnswer;
     }
-
-    history.push({ role: "assistant", content: finalAnswer });
   } catch (error) {
     const errorText = `请求失败：${error.message}`;
     assistantMessage.paragraph.textContent = errorText;
-    history.push({ role: "assistant", content: errorText });
     statusText.textContent = "请求失败";
   } finally {
     setSubmitting(false);
@@ -145,8 +162,8 @@ chatForm.addEventListener("submit", async (event) => {
 });
 
 clearButton.addEventListener("click", () => {
-  // 清空前端历史，并把消息列表恢复成初始状态。
-  history.length = 0;
+  // 重置 session_id 等于开启一个新的后端会话 thread。
+  sessionId = resetSessionId();
   messageList.innerHTML = "";
   renderMessage("assistant", "会话已清空，可以开始新的问题。");
   statusText.textContent = "已清空会话";

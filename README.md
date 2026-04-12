@@ -2,7 +2,7 @@
 
 这是一个面向扫地机器人与扫拖一体机器人场景的智能客服系统项目。
 
-当前阶段，系统的核心功能是智能客服问答：
+当前阶段，系统的核心能力包括：
 
 - 用户输入问题
 - Agent 根据问题自主决定是否调用工具
@@ -17,7 +17,7 @@
 
 ## 当前目标
 
-当前项目的主要目标是先把“智能客服问答”这一条链路做稳定、做完整，包括：
+当前项目的主要目标是先把“智能客服问答”这条链路做稳定、做完整，包括：
 
 - 智能问答体验
 - 知识库检索能力
@@ -35,23 +35,22 @@
 ## 项目结构
 
 ```text
-AI大模型RAG与智能体开发_Agent项目/
-├─ backend/
-│  ├─ app/
-│  │  ├─ api/          # FastAPI 接口层
-│  │  ├─ agents/       # Agent 编排、工具、中间件
-│  │  ├─ services/     # RAG、Prompt 等业务服务
-│  │  ├─ infra/        # 模型、向量库、文件加载等基础设施
-│  │  ├─ core/         # 配置、路径、日志
-│  │  └─ main.py       # FastAPI 启动入口
-│  ├─ data/            # 知识库原始数据、外部数据
-│  ├─ chroma_db/       # Chroma 持久化向量库
-│  └─ logs/            # 运行日志
-├─ frontend/           # 简单前端会话页面
-├─ config/             # YAML 配置文件
-├─ prompts/            # Prompt 模板
-├─ requirements.txt    # Python 依赖
-└─ README.md
+customer_service_agent/
+├── backend/
+│   ├── app/
+│   │   ├── api/          # FastAPI 接口层
+│   │   ├── agents/       # Agent 编排、工具、中间件
+│   │   ├── services/     # 业务服务层
+│   │   ├── infra/        # 模型、向量库、文件加载等基础设施
+│   │   ├── core/         # 配置、路径、日志
+│   │   └── main.py       # FastAPI 启动入口
+│   ├── data/             # 知识库原始数据、外部数据
+│   ├── chroma_db/        # Chroma 持久化向量库
+│   └── logs/             # 运行日志
+├── frontend/             # 简单前端会话页面
+├── config/               # YAML 配置文件
+├── requirements.txt      # Python 依赖
+└── README.md
 ```
 
 ## 当前能力
@@ -67,9 +66,23 @@ AI大模型RAG与智能体开发_Agent项目/
 
 当前聊天页面的显示策略是：
 
-- 请求发起后先显示“正在思考...”
-- 中间思考过程不展示给用户
-- 最终只展示最后答复
+- 请求发起后先显示“正在思考中...”
+- 中间推理过程不直接展示给用户
+- 最终只展示最后答案
+
+## 会话与短期记忆
+
+当前项目的短期记忆已经切换为后端托管：
+
+- 前端不再维护完整 `history`
+- 前端每次请求只发送 `query` 和 `session_id`
+- 后端通过 `create_agent(..., checkpointer=...)` 结合 `thread_id=session_id` 保存单次会话的短期记忆
+
+当前使用的是内存型 `checkpointer`，因此有以下特性：
+
+- 同一个 `session_id` 下，多轮对话会自动续接上下文
+- 点击前端“清空会话”后，会生成新的 `session_id`，相当于开启新会话
+- 后端服务重启后，短期记忆会丢失
 
 ## 启动方式
 
@@ -100,6 +113,10 @@ python -m http.server 5500 -d frontend
 
 - `http://127.0.0.1:5500`
 
+默认后端地址是：
+
+- `http://127.0.0.1:8000`
+
 ## 当前核心接口
 
 ### 健康检查
@@ -115,18 +132,15 @@ python -m http.server 5500 -d frontend
 ```json
 {
   "query": "我现在的环境下应该怎么保养机器人？",
-  "history": [
-    {
-      "role": "user",
-      "content": "你好"
-    },
-    {
-      "role": "assistant",
-      "content": "你好，请问有什么可以帮您？"
-    }
-  ]
+  "session_id": "demo-session-id"
 }
 ```
+
+说明：
+
+- `query` 是当前轮用户输入
+- `session_id` 用于标识同一会话
+- 后端会把 `session_id` 作为 `thread_id` 交给 `checkpointer` 管理短期记忆
 
 ## 技术方向
 
@@ -150,4 +164,4 @@ python -m http.server 5500 -d frontend
 
 这个项目当前不是“纯聊天页面项目”，而是“以智能客服问答为核心能力的系统雏形”。
 
-当前重点不是页面复杂度，而是先把问答链路、知识库链路、接口链路打稳。
+当前重点不是页面复杂度，而是先把问答链路、知识库链路、接口链路打通。
