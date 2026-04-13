@@ -16,12 +16,15 @@ class MemoryService:
         self.max_injected_memories = memory_conf["max_injected_memories"]
         self.enable_rule_based_extract = memory_conf["enable_rule_based_extract"]
 
+    # 根据用户问题，构造可注入的长期记忆上下文
     def build_memory_context(self, user_id: str, query: str) -> str:
         # 第一版注入策略采用“结构化画像 + 相关记忆摘要”的形式，
         # 这样既能让模型感知长期信息，又不会把所有历史对话直接塞进上下文。
-        profile = self.store.get_user_profile(user_id)
-        memories = self.retrieve_memories(user_id, query)
 
+        profile = self.store.get_user_profile(user_id)      # 获取用户画像
+        memories = self.retrieve_memories(user_id, query)   # 获取相关记忆摘要
+
+        # 格式化成模型可消费的格式
         lines: list[str] = []
         if profile["name"]:
             lines.append(f"- 用户称呼：{profile['name']}")
@@ -46,16 +49,25 @@ class MemoryService:
 
         return "[长期记忆]\n" + "\n".join(lines)
 
+    # 根据用户的问题，从长期记忆中找出相关的历史记忆，仅简单基于字符串是否包含关键词的匹配检索。
     def retrieve_memories(self, user_id: str, query: str) -> list[dict[str, Any]]:
         # 第一版暂不引入向量检索，而是用轻量关键词匹配做相关性过滤。
         # 如果当前 query 无明显关键词命中，则回退到最近更新的记忆条目。
-        query_keywords = [item for item in re.split(r"[\s,，。！？；:：]+", query) if item]
+
+        #先把 query 这个字符串按“空格和各种中英文标点”切开，再把切出来的空字符串去掉，最后得到一个关键词列表。
+        query_keywords = []
+        for item in re.split(r"[\s,，。！？；:：]+", query):
+            if item:
+                query_keywords.append(item)
+
+        # 获取指定用户的所有记忆
         all_memories = self.store.list_user_memories(user_id)
 
         if not query_keywords:
-            return all_memories[: self.max_injected_memories]
+            return all_memories[: self.max_injected_memories]   #切片操作，取前几条
 
-        matched_memories: list[dict[str, Any]] = []
+        matched_memories: list[dict[str, Any]] = []     # 创建一个空列表，用来存放匹配到的记忆
+        # 如果query 中有关键词，则只返回匹配的记忆
         for memory in all_memories:
             if any(keyword in memory["content"] for keyword in query_keywords):
                 matched_memories.append(memory)
@@ -65,12 +77,27 @@ class MemoryService:
 
         return all_memories[: self.max_injected_memories]
 
+    # 从本轮内容里抽取可长期保存的信息
     def extract_and_save(self, user_id: str, query: str, final_answer: str):
+        """
+        当前是规则抽取，不是模型抽取。它会从用户输入里识别这些东西：
+        我住在杭州 -> location
+        我叫张三 -> name
+        型号是X20 -> product_model
+        预算3000元以内 -> budget_range
+        有猫/有狗/有宠物 -> has_pet
+        静音/拖地/续航/避障... -> preferences
+        门槛/地毯/异味/不回充/卡住/噪音 -> 历史问题背景
+        记住/以后推荐/下次推荐/偏好 -> 偏好类长期记忆
+        也就是说，第一版不是“什么都记”，而是“命中规则才记”。
+        """
+
         # 长期记忆写入时机放在本轮回答完成之后，便于同时参考用户输入和最终结论。
         if not self.enable_rule_based_extract:
             return
 
-        profile_fields, memories = self.extract_candidate_memories(query, final_answer)
+        profile_fields, memories = self.extract_candidate_memories(query, final_answer) # 提取候选长期记忆
+        # 写入长期记忆
         if profile_fields:
             self.store.upsert_user_profile(user_id, profile_fields)
 
@@ -94,13 +121,14 @@ class MemoryService:
             saved_count,
         )
 
+    # 分析用户说的话，提取出有用的信息，返回结构化信息profile_fields和非结构化记忆
     def extract_candidate_memories(self, query: str, final_answer: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         # 第一版采用规则抽取，目标是先把链路跑通。
         # 规则命中的内容偏“稳定事实”和“长期有价值的偏好/背景”，避免把一次性内容记进去。
-        del final_answer
+        del final_answer        # 删除这个参数，因为当前版本暂时不用 AI 的回答来提取记忆，只看用户说了什么
 
-        profile_fields: dict[str, Any] = {}
-        memories: list[dict[str, Any]] = []
+        profile_fields: dict[str, Any] = {} # 创建一个空字典，用来存放用户信息
+        memories: list[dict[str, Any]] = [] # 创建一个空列表，用来存放记忆
 
         location_match = re.search(r"我住在([^\s，。！？；]{2,10})", query)
         if location_match:

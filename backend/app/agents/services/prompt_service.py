@@ -2,7 +2,7 @@ from backend.app.core.config import prompts_conf
 from backend.app.core.logger import logger
 from backend.app.core.paths import get_abs_path
 
-
+# 返回一个字符串，该字符串是配置文件中指定的提示词内容。
 def _load_prompt(config_key: str, log_prefix: str) -> str:
     # Prompt 文件路径来自配置文件，这里统一做读取和异常处理。
     try:
@@ -17,7 +17,6 @@ def _load_prompt(config_key: str, log_prefix: str) -> str:
     except Exception as exc:
         logger.error("[%s] failed to load prompt: %s", log_prefix, str(exc))
         raise exc
-
 
 def load_system_prompts() -> str:
     # Agent 默认使用的系统提示词。

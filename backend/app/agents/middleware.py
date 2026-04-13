@@ -49,6 +49,7 @@ def log_before_model(state: AgentState, runtime: Runtime):
     return None
 
 
+# 在模型真正调用之前，动态生成这一次要用的 system prompt。
 @dynamic_prompt
 def report_prompt_switch(request: ModelRequest):
     # 根据运行时上下文切换不同的 system prompt。

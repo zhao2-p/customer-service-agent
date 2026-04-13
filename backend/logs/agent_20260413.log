@@ -1,0 +1,176 @@
+2026-04-13 10:00:45,235 - agent - INFO - chat_service.py:18 - [ChatService.execute_stream] session_id=chat-service-demo-session user_id=chat-service-demo-user memory_context=
+2026-04-13 10:00:45,241 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 10:00:45,241 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 10:00:54,527 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '养猫 家庭 静音 扫拖一体机 3000元 推荐'}
+2026-04-13 10:00:57,399 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 10:00:57,403 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 10:00:57,404 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 预算3000元内，推荐选择基础款扫拖一体机，需具备激光导航和旋转拖布功能；选购时应优先参考真实用户评价，重点关注避障、续航和售后等长期使用反馈，并尽量现场试用以测试导航精准度、避障效果、吸力大小和拖地效果。
+2026-04-13 10:01:04,514 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 10:01:04,515 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 10:01:04,517 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
+2026-04-13 10:01:04,517 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 城市杭州天气为晴天，气温26摄氏度，空气湿度50%，南风3级，AQI21，未来24小时降雨概率极低
+2026-04-13 10:01:11,591 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人 猫毛 静音 拖地 3000元'}
+2026-04-13 10:01:14,306 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 10:01:14,307 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 7 messages
+2026-04-13 10:01:14,307 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 预算3000元内可选基础款扫地机器人，需具备激光导航和旋转拖布功能；选购时应优先实测导航精准度、避障效果、吸力大小和拖地效果，并参考真实用户评价，重点关注续航、避障和售后等长期使用反馈，避开差评集中机型。
+2026-04-13 10:01:20,752 - agent - INFO - memory_service.py:90 - [MemoryService.extract_and_save] user_id=chat-service-demo-user profile_updated=True memories_saved=1
+2026-04-13 12:14:52,993 - agent - INFO - react_agent.py:64 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 12:14:52,999 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 12:14:52,999 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 小户型适合哪些扫地机器人
+2026-04-13 12:14:58,140 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '小户型 扫地机器人 选购建议'}
+2026-04-13 12:15:00,416 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 12:15:00,418 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 12:15:00,418 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 小户型选购扫地机器人应侧重轻便灵活；吸力建议≥3000Pa，若铺设地毯则需≥4000Pa，且优先选择吸力可调节机型；导航技术推荐激光导航，定位精准、抗干扰强。
+2026-04-13 12:15:04,509 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '小户型 静音 扫拖一体机器人 推荐'}
+2026-04-13 12:15:06,577 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 12:15:06,579 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
+2026-04-13 12:15:06,579 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 小户型静音扫拖一体机器人选购应侧重轻便灵活，吸力建议≥3000Pa，优先选择支持吸力调节的机型；导航技术推荐激光导航，定位精准、抗干扰强，更适配小户型复杂环境。
+2026-04-13 12:15:56,530 - agent - INFO - react_agent.py:64 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 12:15:56,534 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 12:15:56,534 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 12:16:01,750 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 12:16:01,752 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 12:16:01,754 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 12:16:01,754 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 城市杭州天气为晴天，气温26摄氏度，空气湿度50%，南风3级，AQI21，未来24小时降雨概率极低
+2026-04-13 12:16:07,805 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫拖机器人日常保养指南'}
+2026-04-13 12:16:10,216 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 12:16:10,218 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
+2026-04-13 12:16:10,218 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙中的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 12:16:15,560 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫拖一体机在温湿环境下的耗材保养与静音维护要点'}
+2026-04-13 12:16:16,881 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 12:16:16,883 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 7 messages
+2026-04-13 12:16:16,884 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 参考资料中未提及扫拖一体机在温湿环境下的耗材保养与静音维护要点。
+2026-04-13 14:18:18,573 - agent - INFO - react_agent.py:64 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:18:18,581 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 14:18:18,581 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 14:18:23,798 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 14:18:23,800 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 14:18:23,801 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人保养'}
+2026-04-13 14:18:25,944 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:18:25,946 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 4 messages
+2026-04-13 14:18:25,946 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙中的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 14:18:32,455 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人 湿度50%保养建议'}
+2026-04-13 14:18:34,674 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:18:34,677 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 6 messages
+2026-04-13 14:18:34,678 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 在湿度50%环境下，扫地机器人日常保养建议包括：每日使用后用干软布擦拭机身外壳，去除灰尘、水渍，避免污渍附着硬化；每次清扫完成后及时清理防撞条缝隙的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 14:18:40,711 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫拖一体机器人 拖布保养'}
+2026-04-13 14:18:41,920 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:18:41,922 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 8 messages
+2026-04-13 14:18:41,923 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 参考资料中未提供关于扫拖一体机器人拖布保养的具体内容。
+2026-04-13 14:18:47,493 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人日常维护'}
+2026-04-13 14:18:49,597 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:18:49,598 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 10 messages
+2026-04-13 14:18:49,599 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 14:36:10,906 - agent - INFO - react_agent.py:64 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:36:35,885 - agent - INFO - react_agent.py:64 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:36:35,890 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 14:36:35,890 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 14:36:41,191 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 14:36:41,192 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 14:36:41,192 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人日常保养'}
+2026-04-13 14:36:43,189 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:36:43,190 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 4 messages
+2026-04-13 14:36:43,191 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 14:36:49,429 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫拖一体机器人静音保养 拖地模块维护'}
+2026-04-13 14:36:51,133 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:36:51,136 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 6 messages
+2026-04-13 14:36:51,136 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙的毛发、线头。
+2026-04-13 14:37:20,574 - agent - INFO - react_agent.py:64 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:47:15,598 - agent - INFO - react_agent.py:68 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:47:15,605 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 14:47:15,605 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 14:47:20,839 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 14:47:20,840 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 14:47:20,841 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人保养'}
+2026-04-13 14:47:22,883 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:47:22,885 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 4 messages
+2026-04-13 14:47:22,885 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 14:47:30,979 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫拖一体机器人拖地模块保养 静音模式耗材维护'}
+2026-04-13 14:47:32,311 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:47:32,313 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 6 messages
+2026-04-13 14:47:32,313 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 参考资料中未提及扫拖一体机器人拖地模块保养、静音模式及耗材维护相关内容。
+2026-04-13 14:53:26,593 - agent - INFO - react_agent.py:79 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:53:26,600 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 14:53:26,601 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 14:53:31,980 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 14:53:31,981 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 14:53:31,984 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人日常保养'}
+2026-04-13 14:53:34,140 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:53:34,142 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 4 messages
+2026-04-13 14:53:34,142 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后，及时清理防撞条缝隙的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 14:53:40,942 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人在中等湿度环境下的保养要点'}
+2026-04-13 14:53:42,594 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:53:42,603 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 6 messages
+2026-04-13 14:53:42,603 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机器人机身外壳，去除灰尘、水渍；每次清扫完成，及时清理机身防撞条缝隙的毛发、线头。
+2026-04-13 14:55:49,338 - agent - INFO - react_agent.py:79 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 14:55:49,343 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 14:55:49,343 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 14:55:54,480 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_user_location args={}
+2026-04-13 14:55:54,481 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_user_location
+2026-04-13 14:55:54,483 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 14:55:54,483 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 杭州
+2026-04-13 14:56:00,095 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '杭州 潮湿环境 扫拖机器人保养'}
+2026-04-13 14:56:01,451 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:56:01,454 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
+2026-04-13 14:56:01,454 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 参考资料中未提及杭州潮湿环境下的扫拖机器人保养要求。
+2026-04-13 14:56:06,136 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫拖一体机器人 高湿度环境 保养指南'}
+2026-04-13 14:56:07,856 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:56:07,861 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 7 messages
+2026-04-13 14:56:07,861 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机身外壳，去除水渍；每次清扫完成，及时清理防撞条缝隙的毛发、线头。
+2026-04-13 14:56:13,336 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '扫地机器人 潮湿地区 维护要点'}
+2026-04-13 14:56:15,718 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 14:56:15,723 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 9 messages
+2026-04-13 14:56:15,723 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 潮湿地区使用扫地机器人需每日使用后用干软布擦拭机身外壳，去除水渍，避免污渍附着硬化；每次清扫完成后及时清理防撞条缝隙的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 15:00:31,415 - agent - INFO - chat_service.py:19 - [ChatService.execute_stream] session_id=chat-service-demo-session user_id=chat-service-demo-user memory_context=[长期记忆] | - 所在城市：杭州 | - 家庭情况：有宠物 | - 预算范围：3000元以内 | - 已知偏好：静音、拖地 | - 历史记忆（preference）：我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:00:31,420 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 15:00:31,420 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:00:36,195 - agent - INFO - memory_service.py:117 - [MemoryService.extract_and_save] user_id=chat-service-demo-user profile_updated=True memories_saved=0
+2026-04-13 15:01:46,079 - agent - INFO - chat_service.py:19 - [ChatService.execute_stream] session_id=chat-service-demo-session user_id=chat-service-demo-user memory_context=[长期记忆] | - 所在城市：杭州 | - 家庭情况：有宠物 | - 预算范围：3000元以内 | - 已知偏好：静音、拖地 | - 历史记忆（preference）：我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:01:46,083 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 15:01:46,083 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:01:51,757 - agent - INFO - memory_service.py:117 - [MemoryService.extract_and_save] user_id=chat-service-demo-user profile_updated=True memories_saved=0
+2026-04-13 15:02:02,228 - agent - INFO - react_agent.py:79 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 15:02:02,233 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 15:02:02,233 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 15:02:06,217 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_user_location args={}
+2026-04-13 15:02:06,218 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_user_location
+2026-04-13 15:02:06,220 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 15:02:06,220 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 杭州
+2026-04-13 15:02:09,611 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '杭州地区扫拖机器人保养建议'}
+2026-04-13 15:02:11,583 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 15:02:11,585 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
+2026-04-13 15:02:11,585 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 每日使用后，用干软布擦拭机器人机身外壳，去除灰尘、水渍；每次清扫完成，及时清理机身防撞条缝隙的毛发、线头。
+2026-04-13 15:06:21,460 - agent - INFO - chat_service.py:19 - [ChatService.execute_stream] session_id=chat-service-demo-session user_id=chat-service-demo-user memory_context=[长期记忆] | - 所在城市：杭州 | - 家庭情况：有宠物 | - 预算范围：3000元以内 | - 已知偏好：静音、拖地 | - 历史记忆（preference）：我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:06:21,465 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 15:06:21,465 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:06:51,606 - agent - INFO - chat_service.py:19 - [ChatService.execute_stream] session_id=chat-service-demo-session user_id=chat-service-demo-user memory_context=[长期记忆] | - 所在城市：杭州 | - 家庭情况：有宠物 | - 预算范围：3000元以内 | - 已知偏好：静音、拖地 | - 历史记忆（preference）：我住在杭州，家里有猫，预算3000元以内，以后推荐时记住我更看重静音和拖地。
+2026-04-13 15:06:51,611 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 15:06:51,611 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 15:06:58,053 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 15:06:58,055 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 15:06:58,057 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 15:06:58,057 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 城市杭州天气为晴天，气温26摄氏度，空气湿度50%，南风3级，AQI21，未来24小时降雨概率极低
+2026-04-13 15:07:04,681 - agent - INFO - middleware.py:24 - [tool monitor] running tool=rag_summarize args={'query': '养宠家庭 扫地机器人 保养要点'}
+2026-04-13 15:07:06,824 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
+2026-04-13 15:07:06,826 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
+2026-04-13 15:07:06,826 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 养宠家庭使用扫地机器人时，需每日使用后用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后及时清理防撞条缝隙中的毛发、线头，防止卡扣卡顿影响回弹。

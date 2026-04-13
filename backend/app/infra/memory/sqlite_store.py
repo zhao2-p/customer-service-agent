@@ -26,6 +26,7 @@ class SQLiteMemoryStore:
         connection.row_factory = sqlite3.Row
         return connection
 
+    # 初始化表结构
     def _init_tables(self):
         # 第一版先维护两张表：
         # 1. user_profiles：保存稳定、结构化的用户画像字段。
@@ -79,6 +80,7 @@ class SQLiteMemoryStore:
         finally:
             connection.close()
 
+    # 获取用户画像
     def get_user_profile(self, user_id: str) -> dict[str, Any]:
         # 如果画像尚未创建，则返回空画像，调用方无需关心数据库是否已有记录。
         connection = self._connect()
@@ -113,6 +115,7 @@ class SQLiteMemoryStore:
         finally:
             connection.close()
 
+    # 更新用户画像
     def upsert_user_profile(self, user_id: str, fields: dict[str, Any]):
         # 画像字段是逐步累积的，这里采用“读-合并-写回”的方式，避免覆盖已有信息。
         current = self.get_user_profile(user_id)
@@ -167,6 +170,7 @@ class SQLiteMemoryStore:
         finally:
             connection.close()
 
+    # 列出用户记忆条目
     def list_user_memories(self, user_id: str) -> list[dict[str, Any]]:
         # 记忆条目按更新时间倒序返回，方便优先注入最新、最可能有用的条目。
         connection = self._connect()
@@ -186,6 +190,7 @@ class SQLiteMemoryStore:
         finally:
             connection.close()
 
+    # 判断记忆条目是否存在
     def memory_exists(self, user_id: str, memory_type: str, content: str) -> bool:
         # 第一版去重策略使用“同一用户 + 同类型 + 同内容”的精确匹配，简单但稳定。
         connection = self._connect()
@@ -204,6 +209,7 @@ class SQLiteMemoryStore:
         finally:
             connection.close()
 
+    # 添加用户记忆条目
     def add_memory(
         self,
         user_id: str,

@@ -45,11 +45,26 @@ class ReactAgent:
         config = {"configurable": {"thread_id": session_id}}
 
         for chunk in self.agent.stream(
-            input_dict,
+            input=input_dict,
             config=config,
             stream_mode="values",
             context={"report": False, "memory_context": memory_context},
         ):
+
+            #打印完整的原生的消息
+            # print("\n===== RAW CHUNK START =====")
+            # print(chunk)
+            # print("===== RAW CHUNK END =====\n")
+
+            # print("===== RAW MESSAGES START =====")
+            # print(chunk["messages"])
+            # print("===== RAW MESSAGES END =====")
+
+            # 打印完整消息
+            # print("==== chunk messages ====")
+            # for i, message in enumerate(chunk["messages"]):
+            #     print(i, type(message).__name__, getattr(message, "content", None))
+
             latest_message = chunk["messages"][-1]
             if latest_message.content:
                 yield latest_message.content.strip() + "\n"
@@ -63,7 +78,7 @@ if __name__ == "__main__":
     test_memory_context = "[长期记忆]\n- 所在城市：杭州\n- 已知偏好：静音、拖地"
     logger.info("[react_agent.__main__] memory_context=%s", test_memory_context)
 
-    for chunk in agent.execute_stream("小户型适合哪些扫地机器人", test_session_id, test_memory_context):
+    for chunk in agent.execute_stream("我当前环境下怎么保养机器人", test_session_id, test_memory_context):
         print(chunk, end="", flush=True)
 
     # for chunk in agent.execute_stream("我叫什么名字", test_session_id, test_memory_context):
