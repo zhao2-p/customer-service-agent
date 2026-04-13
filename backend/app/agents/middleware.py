@@ -7,7 +7,11 @@ from langchain_core.messages import ToolMessage
 from langgraph.runtime import Runtime
 from langgraph.types import Command
 
-from backend.app.agents.services.prompt_service import load_report_prompts, load_system_prompts
+from backend.app.agents.services.prompt_service import (
+    append_memory_context,
+    load_report_prompts,
+    load_system_prompts,
+)
 from backend.app.core.logger import logger
 
 
@@ -48,7 +52,9 @@ def log_before_model(state: AgentState, runtime: Runtime):
 @dynamic_prompt
 def report_prompt_switch(request: ModelRequest):
     # 根据运行时上下文切换不同的 system prompt。
+    # 在此基础上追加 memory_context，让长期记忆以独立提示块的形式注入模型。
+    memory_context = request.runtime.context.get("memory_context", "")
     if request.runtime.context.get("report", False):
-        return load_report_prompts()
+        return append_memory_context(load_report_prompts(), memory_context)
 
-    return load_system_prompts()
+    return append_memory_context(load_system_prompts(), memory_context)

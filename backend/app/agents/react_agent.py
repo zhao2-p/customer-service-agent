@@ -1,7 +1,6 @@
 from typing import Generator
 
 from langchain.agents import create_agent
-from langchain_classic.chains.question_answering.map_reduce_prompt import messages
 from langgraph.checkpoint.memory import InMemorySaver
 
 from backend.app.agents.middleware import log_before_model, monitor_tool, report_prompt_switch
@@ -15,6 +14,7 @@ from backend.app.agents.tools.agent_tools import (
     get_weather,
     rag_summarize,
 )
+from backend.app.core.logger import logger
 from backend.app.infra.llm.factory import chat_model
 
 
@@ -38,8 +38,9 @@ class ReactAgent:
             checkpointer=self.checkpointer,
         )
 
-    def execute_stream(self, query: str, session_id: str) -> Generator[str, None, None]:
+    def execute_stream(self, query: str, session_id: str, memory_context: str = "") -> Generator[str, None, None]:
         # 在 checkpointer 模式下，请求只提交本轮用户消息；历史由 thread_id 自动续接。
+        # 长期记忆不直接混入历史消息，而是通过 runtime.context 注入到动态 prompt 中。
         input_dict = {"messages": [{"role": "user", "content": query}]}
         config = {"configurable": {"thread_id": session_id}}
 
@@ -47,7 +48,7 @@ class ReactAgent:
             input_dict,
             config=config,
             stream_mode="values",
-            context={"report": False},
+            context={"report": False, "memory_context": memory_context},
         ):
             latest_message = chunk["messages"][-1]
             if latest_message.content:
@@ -55,10 +56,15 @@ class ReactAgent:
 
 
 if __name__ == "__main__":
+    # 模块级测试代码：
+    # 这里直接给一个模拟的 memory_context，便于验证长期记忆注入不会影响既有流式输出链路。
     agent = ReactAgent()
     test_session_id = "react-agent-local-test"
-    for chunk in agent.execute_stream("小户型适合哪些扫地机器人", test_session_id):
+    test_memory_context = "[长期记忆]\n- 所在城市：杭州\n- 已知偏好：静音、拖地"
+    logger.info("[react_agent.__main__] memory_context=%s", test_memory_context)
+
+    for chunk in agent.execute_stream("小户型适合哪些扫地机器人", test_session_id, test_memory_context):
         print(chunk, end="", flush=True)
 
-    # for chunk in agent.execute_stream("我叫什么名字", test_session_id):
+    # for chunk in agent.execute_stream("我叫什么名字", test_session_id, test_memory_context):
     #     print(chunk, end="", flush=True)

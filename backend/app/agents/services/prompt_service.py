@@ -32,3 +32,12 @@ def load_rag_prompts() -> str:
 def load_report_prompts() -> str:
     # 报告生成场景专用提示词。
     return _load_prompt("report_prompt_path", "load_report_prompts")
+
+
+def append_memory_context(base_prompt: str, memory_context: str) -> str:
+    # 长期记忆并不等价于历史消息，这里把它拼成一个独立的提示块，
+    # 方便模型区分“系统规则”和“已知用户事实”，也方便后续替换成更复杂的注入策略。
+    if not memory_context:
+        return base_prompt
+
+    return f"{base_prompt}\n\n{memory_context}\n"

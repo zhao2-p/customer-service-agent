@@ -7,6 +7,7 @@ const sendButton = document.getElementById("send-btn");
 const clearButton = document.getElementById("clear-btn");
 
 const SESSION_STORAGE_KEY = "chat-session-id";
+const USER_STORAGE_KEY = "chat-user-id";
 
 function createSessionId() {
   if (window.crypto?.randomUUID) {
@@ -14,6 +15,14 @@ function createSessionId() {
   }
 
   return `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function createUserId() {
+  if (window.crypto?.randomUUID) {
+    return `user-${window.crypto.randomUUID()}`;
+  }
+
+  return `user-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 function getOrCreateSessionId() {
@@ -27,6 +36,19 @@ function getOrCreateSessionId() {
   return newSessionId;
 }
 
+function getOrCreateUserId() {
+  // 长期记忆要绑定“用户”而不是“会话”，因此前端除了 session_id，
+  // 还要在本地长期保存一个稳定的 user_id，供每次请求一起带给后端。
+  const savedUserId = window.localStorage.getItem(USER_STORAGE_KEY);
+  if (savedUserId) {
+    return savedUserId;
+  }
+
+  const newUserId = createUserId();
+  window.localStorage.setItem(USER_STORAGE_KEY, newUserId);
+  return newUserId;
+}
+
 function resetSessionId() {
   const newSessionId = createSessionId();
   window.localStorage.setItem(SESSION_STORAGE_KEY, newSessionId);
@@ -35,6 +57,8 @@ function resetSessionId() {
 
 // 前端不再维护完整 history，只保存用于绑定后端短期记忆的 session_id。
 let sessionId = getOrCreateSessionId();
+// user_id 用于绑定长期记忆，即使 session_id 重置，只要 user_id 不变，就仍是同一个用户。
+const userId = getOrCreateUserId();
 
 function createMessage(role, content = "") {
   const article = document.createElement("article");
@@ -82,7 +106,7 @@ chatForm.addEventListener("submit", async (event) => {
   }
 
   const apiBase = apiBaseInput.value.trim().replace(/\/$/, "");
-  const payload = { query, session_id: sessionId };
+  const payload = { query, session_id: sessionId, user_id: userId };
 
   renderMessage("user", query);
   queryInput.value = "";
@@ -163,6 +187,7 @@ chatForm.addEventListener("submit", async (event) => {
 
 clearButton.addEventListener("click", () => {
   // 重置 session_id 等于开启一个新的后端会话 thread。
+  // 这里不清理 user_id，因为“清空会话”不应该顺手抹掉长期记忆绑定的用户身份。
   sessionId = resetSessionId();
   messageList.innerHTML = "";
   renderMessage("assistant", "会话已清空，可以开始新的问题。");
