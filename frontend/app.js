@@ -57,7 +57,7 @@ function resetSessionId() {
 
 // 前端不再维护完整 history，只保存用于绑定后端短期记忆的 session_id。
 let sessionId = getOrCreateSessionId();
-// user_id 用于绑定长期记忆，即使 session_id 重置，只要 user_id 不变，就仍是同一个用户。
+// user_id 用于绑定长期记忆，即使 session_id 重置，只要 user_id 不变，就仍然是同一个用户。
 const userId = getOrCreateUserId();
 
 function createMessage(role, content = "") {
@@ -114,6 +114,8 @@ chatForm.addEventListener("submit", async (event) => {
 
   const assistantMessage = createMessage("assistant", "正在思考中...");
   let finalAnswer = "";
+  let streamedAnswer = "";
+  let hasStartedStreaming = false;
 
   try {
     const response = await fetch(`${apiBase}/api/v1/chat/stream`, {
@@ -164,6 +166,19 @@ chatForm.addEventListener("submit", async (event) => {
           statusText.textContent = "模型正在生成...";
         }
 
+        if (eventData.type === "delta") {
+          // 收到最终答案的首个增量片段后，先清掉“正在思考中...”，再逐字追加到当前消息中。
+          if (!hasStartedStreaming) {
+            streamedAnswer = "";
+            assistantMessage.paragraph.textContent = "";
+            hasStartedStreaming = true;
+          }
+
+          streamedAnswer += eventData.content || "";
+          assistantMessage.paragraph.textContent = streamedAnswer;
+          statusText.textContent = "模型正在生成...";
+        }
+
         if (eventData.type === "final") {
           finalAnswer = eventData.content?.trim() || "后端返回了空结果。";
           assistantMessage.paragraph.textContent = finalAnswer;
@@ -186,7 +201,7 @@ chatForm.addEventListener("submit", async (event) => {
 });
 
 clearButton.addEventListener("click", () => {
-  // 重置 session_id 等于开启一个新的后端会话 thread。
+  // 重置 session_id 等价于开启一个新的后端会话 thread。
   // 这里不清理 user_id，因为“清空会话”不应该顺手抹掉长期记忆绑定的用户身份。
   sessionId = resetSessionId();
   messageList.innerHTML = "";

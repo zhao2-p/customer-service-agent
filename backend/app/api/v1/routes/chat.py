@@ -16,4 +16,10 @@ def chat_stream(request: ChatRequest):
     return StreamingResponse(
         chat_service.event_stream(request.query, request.session_id, request.user_id),
         media_type="text/event-stream",
+        # 这些头可以尽量减少中间层缓存或缓冲，帮助前端及时拿到每个 SSE 事件。
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",
+        },
     )
