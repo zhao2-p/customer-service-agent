@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
-from backend.app.agents.services.prompt_service import load_rag_prompts
+from backend.app.agents.support.prompt_support import load_rag_prompts
 from backend.app.core.config import chroma_conf
 from backend.app.core.logger import logger
 from backend.app.core.paths import get_abs_path

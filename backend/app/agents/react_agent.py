@@ -4,7 +4,7 @@ from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 
 from backend.app.agents.middleware import log_before_model, monitor_tool, report_prompt_switch
-from backend.app.agents.services.prompt_service import load_system_prompts
+from backend.app.agents.support.prompt_support import load_system_prompts
 from backend.app.agents.tools.agent_tools import (
     fetch_external_data,
     fill_context_for_report,

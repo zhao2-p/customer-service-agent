@@ -7,7 +7,7 @@ from langchain_core.messages import ToolMessage
 from langgraph.runtime import Runtime
 from langgraph.types import Command
 
-from backend.app.agents.services.prompt_service import (
+from backend.app.agents.support.prompt_support import (
     append_memory_context,
     load_report_prompts,
     load_system_prompts,
