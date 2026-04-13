@@ -2,8 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.app.api.v1.routes.chat import router as chat_router
-from backend.app.api.v1.routes.health import router as health_router
-
 
 # FastAPI 应用对象相当于后端服务的“总入口”。
 # 启动 `uvicorn backend.app.main:app --reload` 时，Uvicorn 会加载这里的 `app`。
@@ -24,5 +22,4 @@ app.add_middleware(
 )
 
 # 把不同模块的路由统一挂到 `/api/v1` 前缀下。
-app.include_router(health_router, prefix="/api/v1")
 app.include_router(chat_router, prefix="/api/v1")

@@ -174,3 +174,12 @@
 2026-04-13 15:07:06,824 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: rag_summarize
 2026-04-13 15:07:06,826 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 5 messages
 2026-04-13 15:07:06,826 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 养宠家庭使用扫地机器人时，需每日使用后用干软布擦拭机身外壳，去除灰尘、水渍；每次清扫完成后及时清理防撞条缝隙中的毛发、线头，防止卡扣卡顿影响回弹。
+2026-04-13 16:02:01,952 - agent - INFO - react_agent.py:79 - [react_agent.__main__] memory_context=[长期记忆]
+- 所在城市：杭州
+- 已知偏好：静音、拖地
+2026-04-13 16:02:01,962 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 1 messages
+2026-04-13 16:02:01,962 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=HumanMessage | 我当前环境下怎么保养机器人
+2026-04-13 16:02:06,786 - agent - INFO - middleware.py:24 - [tool monitor] running tool=get_weather args={'city': '杭州'}
+2026-04-13 16:02:06,787 - agent - INFO - middleware.py:28 - [tool monitor] tool succeeded: get_weather
+2026-04-13 16:02:06,788 - agent - INFO - middleware.py:43 - [log_before_model] calling model with 3 messages
+2026-04-13 16:02:06,788 - agent - DEBUG - middleware.py:44 - [log_before_model] latest=ToolMessage | 城市杭州天气为晴天，气温26摄氏度，空气湿度50%，南风3级，AQI21，未来24小时降雨概率极低
