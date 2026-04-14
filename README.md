@@ -1,90 +1,69 @@
 # 智能客服系统
 
-这是一个面向扫地机器人与扫拖一体机器人场景的智能客服系统项目。
+一个面向扫地机器人与扫拖一体机场景的智能客服项目，当前采用前后端分离架构，核心链路基于 `Agent + RAG + LLM + 长期记忆`。
 
-当前阶段，系统的核心能力包括：
+目前项目已经具备这些能力：
 
-- 用户输入问题
-- Agent 根据问题自主决定是否调用工具
-- RAG 从知识库中检索专业资料
-- 大模型整合检索结果并生成最终答复
-
-项目已经完成从单体 Demo 向前后端分离雏形的重构：
-
-- 后端使用 `FastAPI`
-- 前端使用纯 `HTML + CSS + JavaScript`
-- 问答能力基于 `Agent + RAG + LLM`
-
-## 当前目标
-
-当前项目的主要目标是先把“智能客服问答”这条链路做稳定、做完整，包括：
-
-- 智能问答体验
-- 知识库检索能力
-- 前后端接口联调
-- 最终答复的可用性与专业性
-
-后续会在此基础上逐步扩展为更完整的智能客服系统，例如：
-
-- 知识库管理
-- 会话管理
-- 用户管理
-- 报告生成
-- 后台管理能力
+- 基于知识库的问答
+- Agent 工具调用与多步处理
+- Chroma 向量库检索
+- 基于 `session_id` 的短期会话记忆
+- 基于 `user_id` 的长期记忆注入与持久化
+- 通过 SSE 将最终答案流式返回到前端
 
 ## 项目结构
 
 ```text
 customer_service_agent/
-├── backend/
-│   ├── app/
-│   │   ├── api/          # FastAPI 接口层
-│   │   ├── agents/       # Agent 编排、工具、中间件
-│   │   ├── services/     # 业务服务层
-│   │   ├── infra/        # 模型、向量库、文件加载等基础设施
-│   │   ├── core/         # 配置、路径、日志
-│   │   └── main.py       # FastAPI 启动入口
-│   ├── data/             # 知识库原始数据、外部数据
-│   ├── chroma_db/        # Chroma 持久化向量库
-│   └── logs/             # 运行日志
-├── frontend/             # 简单前端会话页面
-├── config/               # YAML 配置文件
-├── requirements.txt      # Python 依赖
-└── README.md
+├─ backend/
+│  ├─ app/
+│  │  ├─ api/                 # FastAPI 路由与请求模型
+│  │  ├─ agents/              # Agent、工具、中间件、提示词
+│  │  ├─ core/                # 配置、路径、日志
+│  │  ├─ infra/               # LLM、向量库、文件、记忆存储
+│  │  ├─ services/            # 聊天服务、长期记忆服务
+│  │  └─ main.py              # FastAPI 入口
+│  ├─ data/                   # 知识库原始数据、外部数据、长期记忆数据库
+│  ├─ chroma_db/              # Chroma 持久化目录
+│  └─ logs/                   # 运行日志
+├─ config/                    # YAML 配置
+├─ frontend/                  # 原生 HTML/CSS/JS 前端页面
+├─ requirements.txt
+├─ 技术文档.md
+└─ 长期记忆设计稿.md
 ```
 
-## 当前能力
+## 当前架构
 
-当前已经具备的能力：
+后端使用 `FastAPI` 提供接口，前端使用原生 `HTML + CSS + JavaScript`。
 
-- 基于知识库的智能客服问答
-- Agent 工具调用
-- 知识库自动初始化与向量检索
-- FastAPI 后端接口
-- 简单前端聊天页面
-- 前后端分离调用
+聊天主链路如下：
 
-当前聊天页面的显示策略是：
+1. 前端提交 `query`、`session_id`、`user_id`
+2. 后端先根据 `user_id` 读取长期记忆，构造 `memory_context`
+3. Agent 按需调用 RAG、天气、外部数据等工具
+4. Agent 生成最终答案
+5. 后端把最终答案按字符拆分，通过 SSE 流式返回前端
+6. 回答结束后，再从本轮输入中抽取可沉淀的长期记忆并写入 SQLite
 
-- 请求发起后先显示“正在思考中...”
-- 中间推理过程不直接展示给用户
-- 最终只展示最后答案
+## 配置说明
 
-## 会话与短期记忆
+项目当前主要依赖这些配置文件：
 
-当前项目的短期记忆已经切换为后端托管：
+- `config/rag.yml`：聊天模型、Embedding 模型
+- `config/chroma.yml`：Chroma 持久化目录、知识库目录、切分参数
+- `config/agent.yml`：外部数据源路径
+- `config/prompts.yml`：提示词文件路径
+- `config/memory.yml`：长期记忆 SQLite 路径、注入条数、规则抽取开关
 
-- 前端不再维护完整 `history`
-- 前端每次请求只发送 `query` 和 `session_id`
-- 后端通过 `create_agent(..., checkpointer=...)` 结合 `thread_id=session_id` 保存单次会话的短期记忆
+当前默认配置中：
 
-当前使用的是内存型 `checkpointer`，因此有以下特性：
+- 聊天模型：`qwen-plus`
+- 向量模型：`text-embedding-v4`
+- 知识库目录：`backend/data`
+- 长期记忆库：`backend/data/memory/long_term_memory.sqlite3`
 
-- 同一个 `session_id` 下，多轮对话会自动续接上下文
-- 点击前端“清空会话”后，会生成新的 `session_id`，相当于开启新会话
-- 后端服务重启后，短期记忆会丢失
-
-## 启动方式
+## 安装与启动
 
 ### 1. 安装依赖
 
@@ -98,70 +77,123 @@ pip install -r requirements.txt
 uvicorn backend.app.main:app --reload
 ```
 
-后端启动后可访问：
+默认地址：
 
-- 健康检查：`http://127.0.0.1:8000/api/v1/health`
+- `http://127.0.0.1:8000`
 - 接口文档：`http://127.0.0.1:8000/docs`
 
-### 3. 启动前端页面
+### 3. 启动前端
 
 ```powershell
 python -m http.server 5500 -d frontend
 ```
 
-前端访问地址：
+访问地址：
 
 - `http://127.0.0.1:5500`
 
-默认后端地址是：
+## 接口说明
 
-- `http://127.0.0.1:8000`
-
-## 当前核心接口
-
-### 健康检查
-
-- `GET /api/v1/health`
-
-### 智能客服问答
+### 流式聊天接口
 
 - `POST /api/v1/chat/stream`
+- `Content-Type: application/json`
+- 返回类型：`text/event-stream`
 
 请求体示例：
 
 ```json
 {
-  "query": "我现在的环境下应该怎么保养机器人？",
-  "session_id": "demo-session-id"
+  "query": "我当前环境下应该怎么保养机器人？",
+  "session_id": "demo-session-id",
+  "user_id": "demo-user-id"
 }
 ```
 
+字段说明：
+
+- `query`：当前用户问题
+- `session_id`：用于绑定同一段短期会话上下文
+- `user_id`：用于绑定同一用户的长期记忆
+
+### SSE 返回事件
+
+后端当前会返回三类事件：
+
+- `snapshot`：前端展示“正在思考中...”
+- `delta`：最终答案的增量字符流
+- `final`：最终完整答案
+
 说明：
 
-- `query` 是当前轮用户输入
-- `session_id` 用于标识同一会话
-- 后端会把 `session_id` 作为 `thread_id` 交给 `checkpointer` 管理短期记忆
+- 当前实现没有单独提供 `GET /api/v1/health`
+- 文档页 `/docs` 可用于直接查看已注册接口
 
-## 技术方向
+## 会话与记忆机制
 
-当前技术方向已经明确：
+### 短期记忆
 
-- 后端：`FastAPI`
-- 前端：先用简单静态页面验证，再逐步升级
-- 核心能力：`Agent + RAG + LLM`
-- 系统定位：智能客服系统
+- 由 LangGraph 的 `InMemorySaver` 管理
+- 使用 `session_id` 作为 `thread_id`
+- 同一个 `session_id` 下，多轮对话会自动续接上下文
+- 服务重启后，短期记忆会丢失
 
-## 后续规划
+### 长期记忆
 
-下一阶段建议优先补充这些模块：
+- 使用 `user_id` 作为用户标识
+- 持久化存储在 SQLite 中
+- 进入 Agent 前会先注入和当前问题相关的长期记忆
+- 当前采用规则抽取，优先沉淀用户画像与稳定偏好
 
-1. 知识库管理
-2. 会话管理
-3. 报告生成
-4. 更完整的前端页面
+目前已覆盖的长期记忆信息包括：
 
-## 说明
+- 称呼
+- 所在城市
+- 设备型号
+- 户型
+- 是否有宠物
+- 预算范围
+- 偏好信息
+- 历史问题背景
 
-这个项目当前不是“纯聊天页面项目”，而是“以智能客服问答为核心能力的系统雏形”。
+## 前端行为
 
-当前重点不是页面复杂度，而是先把问答链路、知识库链路、接口链路打通。
+当前前端页面的交互逻辑如下：
+
+- 首次进入页面时自动生成并缓存 `session_id`
+- 首次进入页面时自动生成并缓存 `user_id`
+- 点击“清空会话”只会重置 `session_id`
+- 清空会话不会删除 `user_id`，因此长期记忆仍然保留
+- 前端不再自己维护完整历史消息，历史上下文由后端托管
+
+## 依赖栈
+
+主要依赖如下：
+
+- `fastapi`
+- `uvicorn`
+- `pydantic`
+- `langchain`
+- `langgraph`
+- `langchain-chroma`
+- `chromadb`
+- `dashscope`
+- `pypdf`
+
+## 当前状态与后续方向
+
+当前项目重点已经从“单页 Demo”演进为“可持续扩展的智能客服雏形”，现阶段已经打通：
+
+- 前后端分离
+- 知识库检索
+- Agent 工具编排
+- 流式输出
+- 长期记忆闭环
+
+后续可以继续补强的方向包括：
+
+- 健康检查与运维接口
+- 知识库管理后台
+- 会话管理与会话持久化
+- 更完善的前端体验
+- 更智能的长期记忆抽取与召回策略
