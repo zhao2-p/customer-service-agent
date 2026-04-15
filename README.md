@@ -1,79 +1,140 @@
-# 智能客服系统
+# Customer Service Agent
 
-一个面向扫地机器人与扫拖一体机场景的智能客服项目，当前采用前后端分离架构，核心链路基于 `Agent + RAG + LLM + 长期记忆`。
+一个面向扫地机器人/扫拖一体机场景的智能客服项目，采用前后端分离架构，核心能力基于 `Agent + RAG + LLM + 长期记忆`。
 
-目前项目已经具备这些能力：
+项目当前提供：
 
 - 基于知识库的问答
-- Agent 工具调用与多步处理
-- Chroma 向量库检索
+- Agent 工具调用与多步推理
+- Chroma 向量检索
 - 基于 `session_id` 的短期会话记忆
 - 基于 `user_id` 的长期记忆注入与持久化
-- 通过 SSE 将最终答案流式返回到前端
+- 通过 SSE 向前端流式返回最终回复
 
-## 项目结构
+## Features
+
+- `FastAPI` 提供后端 API
+- `HTML + CSS + JavaScript` 提供轻量前端页面
+- `LangChain + LangGraph` 驱动 Agent 编排
+- `DashScope / Tongyi` 提供聊天模型与向量模型
+- `Chroma` 存储知识库向量索引
+- `SQLite` 持久化长期记忆
+
+## Project Structure
 
 ```text
 customer_service_agent/
 ├─ backend/
-│  ├─ app/
+│  ├─ src/                     # 后端源码
+│  │  ├─ agent/               # Agent 能力包，对外暴露 ChatAgentService
 │  │  ├─ api/                 # FastAPI 路由与请求模型
-│  │  ├─ agents/              # Agent、工具、中间件、提示词
-│  │  ├─ core/                # 配置、路径、日志
-│  │  ├─ infra/               # LLM、向量库、文件、记忆存储
-│  │  ├─ services/            # 聊天服务、长期记忆服务
+│  │  ├─ core/                # 配置、日志、路径
+│  │  ├─ infra/               # LLM、向量库、文件、存储基础设施
 │  │  └─ main.py              # FastAPI 入口
-│  ├─ data/                   # 知识库原始数据、外部数据、长期记忆数据库
-│  ├─ chroma_db/              # Chroma 持久化目录
+│  ├─ data/
+│  │  ├─ knowledge/           # 知识库原始数据
+│  │  └─ external/            # 外部数据源
+│  ├─ database/
+│  │  ├─ chroma/              # Chroma 持久化目录
+│  │  └─ memory/              # SQLite 长期记忆数据库
 │  └─ logs/                   # 运行日志
 ├─ config/                    # YAML 配置
-├─ frontend/                  # 原生 HTML/CSS/JS 前端页面
+├─ frontend/                  # 前端页面
 ├─ requirements.txt
-├─ 技术文档.md
-└─ 长期记忆设计稿.md
+└─ README.md
 ```
 
-## 当前架构
+## Architecture
 
-后端使用 `FastAPI` 提供接口，前端使用原生 `HTML + CSS + JavaScript`。
-
-聊天主链路如下：
+一次聊天请求的大致链路如下：
 
 1. 前端提交 `query`、`session_id`、`user_id`
-2. 后端先根据 `user_id` 读取长期记忆，构造 `memory_context`
-3. Agent 按需调用 RAG、天气、外部数据等工具
-4. Agent 生成最终答案
-5. 后端把最终答案按字符拆分，通过 SSE 流式返回前端
-6. 回答结束后，再从本轮输入中抽取可沉淀的长期记忆并写入 SQLite
+2. 后端根据 `user_id` 读取长期记忆，构造 `memory_context`
+3. Agent 根据需要调用 RAG、天气、外部数据等工具
+4. 大模型生成最终回复
+5. 后端通过 SSE 将回复按字符流式返回给前端
+6. 回答结束后，从本轮输入中提取可沉淀的长期记忆并写入 SQLite
 
-## 配置说明
+## Tech Stack
 
-项目当前主要依赖这些配置文件：
+- `FastAPI`
+- `Uvicorn`
+- `Pydantic`
+- `LangChain`
+- `LangGraph`
+- `ChromaDB`
+- `DashScope`
+- `SQLite`
+
+## Requirements
+
+- Python `3.11+` 推荐
+- 可访问 DashScope 服务
+- 已安装 `pip`
+
+## Installation
+
+### 1. Clone the repository
+
+```powershell
+git clone <your-repo-url>
+cd customer_service_agent
+```
+
+### 2. Install dependencies
+
+```powershell
+pip install -r requirements.txt
+```
+
+### 3. Configure environment variables
+
+本项目的大模型 API Key 不写在仓库中，而是从本地环境变量读取。
+
+当前项目使用的是 DashScope 生态下的模型与向量服务，因此你需要配置：
+
+```powershell
+$env:DASHSCOPE_API_KEY="your_api_key"
+```
+
+如果你希望在当前用户下长期生效，可以在 PowerShell 中执行：
+
+```powershell
+[System.Environment]::SetEnvironmentVariable("DASHSCOPE_API_KEY", "your_api_key", "User")
+```
+
+配置完成后，重新打开一个终端，再执行下面的命令检查是否生效：
+
+```powershell
+echo $env:DASHSCOPE_API_KEY
+```
+
+如果你使用的是 `cmd`，可以这样设置：
+
+```cmd
+set DASHSCOPE_API_KEY=your_api_key
+```
+
+## Configuration
+
+主要配置文件如下：
 
 - `config/rag.yml`：聊天模型、Embedding 模型
-- `config/chroma.yml`：Chroma 持久化目录、知识库目录、切分参数
+- `config/chroma.yml`：Chroma 持久化路径、知识库路径、切片参数
 - `config/agent.yml`：外部数据源路径
-- `config/prompts.yml`：提示词文件路径
-- `config/memory.yml`：长期记忆 SQLite 路径、注入条数、规则抽取开关
+- `config/prompts.yml`：Prompt 文件路径
+- `config/memory.yml`：长期记忆 SQLite 路径、注入数量、抽取开关
 
-当前默认配置中：
+当前默认配置：
 
 - 聊天模型：`qwen-plus`
 - 向量模型：`text-embedding-v4`
 - 知识库目录：`backend/data/knowledge`
 - 长期记忆库：`backend/database/memory/long_term_memory.sqlite3`
 
-## 安装与启动
+## Run
 
-### 1.拉取源码到本地
-
-### 2. 安装依赖
-
-```powershell
-pip install -r requirements.txt
-```
-
-### 3. 启动后端
+### Start backend
 
 ```powershell
 uvicorn backend.src.main:app --reload
@@ -81,10 +142,10 @@ uvicorn backend.src.main:app --reload
 
 默认地址：
 
-- `http://127.0.0.1:8000`
-- 接口文档：`http://127.0.0.1:8000/docs`
+- API: `http://127.0.0.1:8000`
+- Docs: `http://127.0.0.1:8000/docs`
 
-### 4. 启动前端
+### Start frontend
 
 ```powershell
 python -m http.server 5500 -d frontend
@@ -94,15 +155,15 @@ python -m http.server 5500 -d frontend
 
 - `http://127.0.0.1:5500`
 
-## 接口说明
+## API
 
-### 流式聊天接口
+### Streaming chat
 
 - `POST /api/v1/chat/stream`
 - `Content-Type: application/json`
-- 返回类型：`text/event-stream`
+- Response: `text/event-stream`
 
-请求体示例：
+请求示例：
 
 ```json
 {
@@ -115,41 +176,34 @@ python -m http.server 5500 -d frontend
 字段说明：
 
 - `query`：当前用户问题
-- `session_id`：用于绑定同一段短期会话上下文
-- `user_id`：用于绑定同一用户的长期记忆
+- `session_id`：同一会话的短期上下文标识
+- `user_id`：同一用户的长期记忆标识
 
-### SSE 返回事件
+SSE 事件类型：
 
-后端当前会返回三类事件：
+- `snapshot`：前端显示“正在思考中...”
+- `delta`：最终回复的增量字符流
+- `final`：最终完整回复
 
-- `snapshot`：前端展示“正在思考中...”
-- `delta`：最终答案的增量字符流
-- `final`：最终完整答案
+## Memory Design
 
-说明：
+### Short-term memory
 
-- 当前实现没有单独提供 `GET /api/v1/health`
-- 文档页 `/docs` 可用于直接查看已注册接口
+- 使用 `LangGraph InMemorySaver`
+- 以 `session_id` 作为 `thread_id`
+- 同一 `session_id` 下可自动续接上下文
+- 服务重启后短期记忆会丢失
 
-## 会话与记忆机制
+### Long-term memory
 
-### 短期记忆
+- 以 `user_id` 作为用户标识
+- 持久化到 SQLite
+- 进入 Agent 前先注入相关长期记忆
+- 回答结束后根据规则抽取用户画像和偏好信息
 
-- 由 LangGraph 的 `InMemorySaver` 管理
-- 使用 `session_id` 作为 `thread_id`
-- 同一个 `session_id` 下，多轮对话会自动续接上下文
-- 服务重启后，短期记忆会丢失
+当前长期记忆覆盖的信息包括：
 
-### 长期记忆
-
-- 使用 `user_id` 作为用户标识
-- 持久化存储在 SQLite 中
-- 进入 Agent 前会先注入和当前问题相关的长期记忆
-- 当前采用规则抽取，优先沉淀用户画像与稳定偏好
-
-目前已覆盖的长期记忆信息包括：
-
-- 称呼
+- 用户称呼
 - 所在城市
 - 设备型号
 - 户型
@@ -158,44 +212,62 @@ python -m http.server 5500 -d frontend
 - 偏好信息
 - 历史问题背景
 
-## 前端行为
+## Data Layout
 
-当前前端页面的交互逻辑如下：
+### Knowledge data
 
-- 首次进入页面时自动生成并缓存 `session_id`
-- 首次进入页面时自动生成并缓存 `user_id`
-- 点击“清空会话”只会重置 `session_id`
-- 清空会话不会删除 `user_id`，因此长期记忆仍然保留
-- 前端不再自己维护完整历史消息，历史上下文由后端托管
+存放位置：`backend/data/knowledge`
 
-## 依赖栈
+包含知识库原始文本、PDF 等内容，用于构建向量索引。
 
-主要依赖如下：
+### External data
 
-- `fastapi`
-- `uvicorn`
-- `pydantic`
-- `langchain`
-- `langgraph`
-- `langchain-chroma`
-- `chromadb`
-- `dashscope`
-- `pypdf`
+存放位置：`backend/data/external`
 
-## 当前状态与后续方向
+用于模拟外部系统数据源，例如 `records.csv`。
 
-当前项目重点已经从“单页 Demo”演进为“可持续扩展的智能客服雏形”，现阶段已经打通：
+### Runtime databases
 
-- 前后端分离
-- 知识库检索
-- Agent 工具编排
-- 流式输出
-- 长期记忆闭环
+存放位置：`backend/database`
 
-后续可以继续补强的方向包括：
+- `backend/database/chroma`：向量库持久化数据
+- `backend/database/memory`：长期记忆 SQLite
+
+这些文件属于运行产物，通常不建议提交到 GitHub。
+
+## Development Notes
+
+- 当前项目已经支持从 `backend.src.agent.chat_agent_service.ChatAgentService` 统一调用 Agent
+- `backend/src/agent` 是核心能力包
+- `backend/src/infra` 放底层实现，不直接承载业务编排
+- `.gitignore` 已忽略日志、数据库、IDE 配置和 Python 缓存
+
+## Known Limitations
+
+- 当前对外主要提供流式聊天接口
+- 没有单独的健康检查接口
+- 短期记忆为内存级，不跨服务重启保留
+- 模型调用依赖本地环境变量和外部网络连通性
+
+## Roadmap
+
+后续可以继续完善的方向包括：
 
 - 健康检查与运维接口
 - 知识库管理后台
-- 会话管理与会话持久化
-- 更完善的前端体验
+- 会话管理与持久化
+- 更完善的前端交互体验
 - 更智能的长期记忆抽取与召回策略
+
+## Open Source Notes
+
+如果你准备将项目开源到 GitHub，建议额外检查以下内容：
+
+- 不要提交真实 API Key
+- 不要提交本地数据库与日志文件
+- 不要提交仅本地使用的私人文档
+- 提交前确认 `config/` 中不包含敏感信息
+
+## License
+
+如果你准备正式开源，建议补充一个 LICENSE 文件，例如 `MIT`。
