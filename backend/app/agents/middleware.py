@@ -51,7 +51,7 @@ def log_before_model(state: AgentState, runtime: Runtime):
 
 # 在模型真正调用之前，动态生成这一次要用的 system prompt。
 @dynamic_prompt
-def report_prompt_switch(request: ModelRequest):
+def build_dynamic_prompt(request: ModelRequest):
     # 根据运行时上下文切换不同的 system prompt。
     # 在此基础上追加 memory_context，让长期记忆以独立提示块的形式注入模型。
     memory_context = request.runtime.context.get("memory_context", "")

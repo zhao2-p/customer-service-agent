@@ -3,7 +3,7 @@ from typing import Generator
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 
-from backend.app.agents.middleware import log_before_model, monitor_tool, report_prompt_switch
+from backend.app.agents.middleware import log_before_model, monitor_tool, build_dynamic_prompt
 from backend.app.agents.support.prompt_support import load_system_prompts
 from backend.app.agents.tools.agent_tools import (
     fetch_external_data,
@@ -34,7 +34,7 @@ class ReactAgent:
                 fetch_external_data,
                 fill_context_for_report,
             ],
-            middleware=[monitor_tool, log_before_model, report_prompt_switch],
+            middleware=[monitor_tool, log_before_model, build_dynamic_prompt],
             checkpointer=self.checkpointer,
         )
 
