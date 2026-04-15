@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+
+.idea/
+
+backend/logs/
+backend/database/
