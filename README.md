@@ -60,8 +60,8 @@ customer_service_agent/
 
 - 聊天模型：`qwen-plus`
 - 向量模型：`text-embedding-v4`
-- 知识库目录：`backend/data`
-- 长期记忆库：`backend/data/memory/long_term_memory.sqlite3`
+- 知识库目录：`backend/data/knowledge`
+- 长期记忆库：`backend/database/memory/long_term_memory.sqlite3`
 
 ## 安装与启动
 
@@ -74,7 +74,7 @@ pip install -r requirements.txt
 ### 2. 启动后端
 
 ```powershell
-uvicorn backend.app.main:app --reload
+uvicorn backend.src.main:app --reload
 ```
 
 默认地址：

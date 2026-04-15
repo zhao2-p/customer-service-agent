@@ -1,4 +1,4 @@
 
-main_prompt_path: backend/app/agents/prompts/main_prompt.txt
-rag_summarize_prompt_path: backend/app/agents/prompts/rag_summarize.txt
-report_prompt_path: backend/app/agents/prompts/report_prompt.txt
+main_prompt_path: backend/src/agent/prompts/main_prompt.txt
+rag_summarize_prompt_path: backend/src/agent/prompts/rag_summarize.txt
+report_prompt_path: backend/src/agent/prompts/report_prompt.txt
