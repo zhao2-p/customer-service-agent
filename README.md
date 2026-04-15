@@ -65,13 +65,15 @@ customer_service_agent/
 
 ## 安装与启动
 
-### 1. 安装依赖
+### 1.拉取源码到本地
+
+### 2. 安装依赖
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-### 2. 启动后端
+### 3. 启动后端
 
 ```powershell
 uvicorn backend.src.main:app --reload
@@ -82,7 +84,7 @@ uvicorn backend.src.main:app --reload
 - `http://127.0.0.1:8000`
 - 接口文档：`http://127.0.0.1:8000/docs`
 
-### 3. 启动前端
+### 4. 启动前端
 
 ```powershell
 python -m http.server 5500 -d frontend
