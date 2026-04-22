@@ -74,6 +74,7 @@ textarea {
   display: grid;
   grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.35fr);
   gap: 24px;
+  align-items: stretch;
 }
 
 .hero-panel,
@@ -91,7 +92,8 @@ textarea {
   border-radius: 30px;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 48px);
+  height: calc(100vh - 48px);
+  overflow: hidden;
 }
 
 .eyebrow {
@@ -125,7 +127,6 @@ textarea {
 
 .signal-card,
 .quick-prompts,
-.meta-card,
 .composer,
 .message {
   border: 1px solid rgba(255, 255, 255, 0.09);
@@ -220,8 +221,10 @@ textarea {
   border-radius: 32px;
   padding: 18px;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  min-height: calc(100vh - 48px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: calc(100vh - 48px);
+  overflow: hidden;
+  min-height: 0;
 }
 
 .chat-header {
@@ -229,11 +232,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 16px 16px 18px;
-}
-
-.chat-header h2 {
-  font-size: clamp(34px, 5vw, 52px);
+  padding: 12px 16px 14px;
 }
 
 .header-actions {
@@ -262,33 +261,14 @@ textarea {
   box-shadow: 0 0 14px rgba(126, 240, 191, 0.72);
 }
 
-.meta-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  padding: 0 16px 16px;
-}
-
-.meta-card {
-  padding: 16px 18px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.meta-card strong {
-  display: block;
-  margin-top: 10px;
-  font-size: 15px;
-  word-break: break-all;
-}
-
 .message-list {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 8px 16px 16px;
-  min-height: 320px;
+  min-height: 0;
+  height: 100%;
 }
 
 .message {
@@ -317,14 +297,17 @@ textarea {
 
 .message-badge {
   display: inline-block;
-  margin-bottom: 10px;
-  padding: 5px 10px;
+  margin-bottom: 12px;
+  padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: rgba(255, 255, 255, 0.08);
   color: var(--gold-strong);
+  position: relative;
+  top: -2px;
+  left: -2px;
 }
 
 .message-time {
@@ -335,7 +318,7 @@ textarea {
 
 .composer {
   margin: 0 16px 16px;
-  padding: 18px;
+  padding: 10px 14px;
   border-radius: 28px;
   background: var(--panel-strong);
 }
@@ -347,12 +330,12 @@ textarea {
 
 .field {
   display: grid;
-  gap: 10px;
+  gap: 6px;
 }
 
 .field span {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 input,
@@ -362,7 +345,7 @@ textarea {
   background: rgba(255, 255, 255, 0.04);
   color: var(--text);
   border-radius: 18px;
-  padding: 14px 16px;
+  padding: 13px 16px;
   outline: none;
   transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
@@ -380,12 +363,15 @@ textarea:focus {
 }
 
 textarea {
-  min-height: 144px;
+  min-height: 38px;
+  height: 38px;
+  line-height: 1.4;
   resize: vertical;
+  overflow-y: hidden;
 }
 
 .composer-actions {
-  margin-top: 16px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -470,15 +456,20 @@ textarea {
 
   .hero-panel,
   .chat-panel {
-    min-height: auto;
+    height: auto;
   }
 
   .hero-panel {
     gap: 24px;
+    overflow: visible;
   }
 
   .quick-prompts {
     margin-top: 0;
+  }
+
+  .chat-panel {
+    height: min(920px, calc(100vh - 18px));
   }
 }
 
@@ -503,7 +494,6 @@ textarea {
   }
 
   .chat-header,
-  .meta-strip,
   .message-list,
   .composer {
     padding-left: 10px;
@@ -516,11 +506,6 @@ textarea {
     flex-direction: column;
     align-items: stretch;
   }
-
-  .meta-strip {
-    grid-template-columns: 1fr;
-  }
-
   .message {
     max-width: 100%;
   }

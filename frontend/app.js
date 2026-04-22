@@ -1,8 +1,6 @@
 const messageList = document.getElementById("message-list");
 const chatForm = document.getElementById("chat-form");
 const queryInput = document.getElementById("query-input");
-const apiBaseInput = document.getElementById("api-base");
-const apiPreview = document.getElementById("api-preview");
 const statusText = document.getElementById("status-text");
 const sendButton = document.getElementById("send-btn");
 const clearButton = document.getElementById("clear-btn");
@@ -11,6 +9,7 @@ const promptChips = document.querySelectorAll(".prompt-chip");
 
 const SESSION_STORAGE_KEY = "chat-session-id";
 const USER_STORAGE_KEY = "chat-user-id";
+const API_BASE = "http://127.0.0.1:8000";
 
 function createSessionId() {
   if (window.crypto?.randomUUID) {
@@ -67,11 +66,6 @@ function getTimestampLabel() {
   });
 }
 
-function updateApiPreview() {
-  const apiBase = apiBaseInput.value.trim() || "未设置";
-  apiPreview.textContent = apiBase.replace(/\/$/, "");
-}
-
 function updateCharCount() {
   const count = queryInput.value.trim().length;
   charCount.textContent = `${count} 字`;
@@ -109,7 +103,6 @@ function setSubmitting(isSubmitting) {
   sendButton.disabled = isSubmitting;
   clearButton.disabled = isSubmitting;
   queryInput.disabled = isSubmitting;
-  apiBaseInput.disabled = isSubmitting;
 
   for (const chip of promptChips) {
     chip.disabled = isSubmitting;
@@ -137,7 +130,7 @@ async function submitQuery(query) {
     return;
   }
 
-  const apiBase = apiBaseInput.value.trim().replace(/\/$/, "");
+  const apiBase = API_BASE.replace(/\/$/, "");
   const payload = { query: normalizedQuery, session_id: sessionId, user_id: userId };
 
   renderMessage("user", normalizedQuery);
@@ -251,7 +244,6 @@ clearButton.addEventListener("click", () => {
 });
 
 queryInput.addEventListener("input", updateCharCount);
-apiBaseInput.addEventListener("input", updateApiPreview);
 
 for (const chip of promptChips) {
   chip.addEventListener("click", () => {
@@ -261,5 +253,4 @@ for (const chip of promptChips) {
   });
 }
 
-updateApiPreview();
 updateCharCount();

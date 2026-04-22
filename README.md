@@ -226,21 +226,11 @@ SSE 事件类型：
 
 用于模拟外部系统数据源，例如 `records.csv`。
 
-### Runtime databases
-
-存放位置：`backend/database`
-
-- `backend/database/chroma`：向量库持久化数据
-- `backend/database/memory`：长期记忆 SQLite
-
-这些文件属于运行产物，通常不建议提交到 GitHub。
-
 ## Development Notes
 
-- 当前项目已经支持从 `backend.src.agent.chat_agent_service.ChatAgentService` 统一调用 Agent
+- 当前项目从 `backend.src.agent.chat_agent_service.ChatAgentService` 统一调用 Agent
 - `backend/src/agent` 是核心能力包
 - `backend/src/infra` 放底层实现，不直接承载业务编排
-- `.gitignore` 已忽略日志、数据库、IDE 配置和 Python 缓存
 
 ## Known Limitations
 
@@ -249,25 +239,5 @@ SSE 事件类型：
 - 短期记忆为内存级，不跨服务重启保留
 - 模型调用依赖本地环境变量和外部网络连通性
 
-## Roadmap
 
-后续可以继续完善的方向包括：
 
-- 健康检查与运维接口
-- 知识库管理后台
-- 会话管理与持久化
-- 更完善的前端交互体验
-- 更智能的长期记忆抽取与召回策略
-
-## Open Source Notes
-
-如果你准备将项目开源到 GitHub，建议额外检查以下内容：
-
-- 不要提交真实 API Key
-- 不要提交本地数据库与日志文件
-- 不要提交仅本地使用的私人文档
-- 提交前确认 `config/` 中不包含敏感信息
-
-## License
-
-如果你准备正式开源，建议补充一个 LICENSE 文件，例如 `MIT`。

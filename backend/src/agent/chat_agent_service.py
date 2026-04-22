@@ -2,6 +2,8 @@ import json
 import time
 from typing import Generator
 
+from requests.exceptions import RequestException
+
 from backend.src.agent.memory.long_term_memory import LongTermMemoryService
 from backend.src.agent.runtime.react_agent import ReactAgent
 from backend.src.core.logger import logger
@@ -25,11 +27,21 @@ class ChatAgentService:
 
     def reply(self, user_id: str, session_id: str, query: str) -> str:
         final_answer = ""
-        for chunk in self.execute_stream(query=query, session_id=session_id, user_id=user_id):
-            snapshot = chunk.strip()
-            if not snapshot:
-                continue
-            final_answer = snapshot
+        try:
+            for chunk in self.execute_stream(query=query, session_id=session_id, user_id=user_id):
+                snapshot = chunk.strip()
+                if not snapshot:
+                    continue
+                final_answer = snapshot
+        except RequestException as exc:
+            logger.exception(
+                "[ChatAgentService.reply] model request failed session_id=%s user_id=%s",
+                session_id,
+                user_id,
+            )
+            raise RuntimeError(
+                "大模型服务连接失败，请检查当前网络、DashScope 服务可达性，或稍后重试。"
+            ) from exc
 
         self.memory_service.extract_and_save(user_id, query, final_answer)
         return final_answer

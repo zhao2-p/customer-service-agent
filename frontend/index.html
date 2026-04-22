@@ -26,7 +26,7 @@
         <ul class="signal-list">
           <li>持续会话记忆</li>
           <li>流式生成反馈</li>
-          <li>用户画像沉淀</li>
+          <li>为您构建长期画像</li>
         </ul>
       </section>
 
@@ -48,7 +48,6 @@
       <header class="chat-header">
         <div>
           <p class="eyebrow">Intelligent Service Desk</p>
-          <h2>智能对话工作台</h2>
         </div>
 
         <div class="header-actions">
@@ -60,41 +59,21 @@
         </div>
       </header>
 
-      <section class="meta-strip" aria-label="会话信息">
-        <article class="meta-card">
-          <span class="meta-label">工作模式</span>
-          <strong>流式客服响应</strong>
-        </article>
-        <article class="meta-card">
-          <span class="meta-label">记忆机制</span>
-          <strong>会话 + 用户双轨</strong>
-        </article>
-        <article class="meta-card">
-          <span class="meta-label">接口地址</span>
-          <strong id="api-preview">http://127.0.0.1:8000</strong>
-        </article>
-      </section>
-
       <section id="message-list" class="message-list" aria-live="polite">
         <article class="message assistant">
           <div class="message-badge">AI 顾问</div>
-          <p>欢迎来到月智能客服。你可以直接咨询产品选购、使用故障、环境适配、清洁保养或月度使用报告。</p>
+          <p>欢迎来到智能客服。您可以直接咨询产品选购、使用故障、环境适配、清洁保养或月度使用报告。</p>
           <time class="message-time">系统就绪</time>
         </article>
       </section>
 
       <form id="chat-form" class="composer">
         <div class="composer-grid">
-          <label class="field api-config">
-            <span>后端地址</span>
-            <input id="api-base" type="text" value="http://127.0.0.1:8000" />
-          </label>
-
           <label class="field question-box">
             <span>输入咨询内容</span>
             <textarea
               id="query-input"
-              rows="5"
+              rows="1"
               placeholder="例如：我家里养猫、地板和地毯混铺，想要一套更稳妥的扫拖机器人维护建议。"
             ></textarea>
           </label>
