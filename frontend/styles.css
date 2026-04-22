@@ -1,94 +1,308 @@
 :root {
-  /* 统一放主题变量，后面调色时不用全局到处改。 */
-  --bg: #f2efe8;
-  --panel: #fffaf2;
-  --panel-border: #d5c8b6;
-  --text: #1f1b16;
-  --muted: #6f6254;
-  --primary: #9d4f2d;
-  --primary-dark: #7d3e23;
-  --user-bubble: #ead7c0;
-  --assistant-bubble: #f7efe2;
-  --shadow: 0 18px 40px rgba(77, 49, 29, 0.14);
+  --bg: #08111f;
+  --bg-soft: #101d31;
+  --panel: rgba(10, 20, 34, 0.76);
+  --panel-strong: rgba(9, 17, 30, 0.9);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text: #f5f1e8;
+  --muted: rgba(245, 241, 232, 0.68);
+  --gold: #d2b07a;
+  --gold-strong: #f0d4a0;
+  --accent: #8cb7ff;
+  --accent-soft: rgba(140, 183, 255, 0.16);
+  --danger-soft: rgba(210, 176, 122, 0.12);
+  --user-bubble: linear-gradient(145deg, rgba(210, 176, 122, 0.24), rgba(255, 255, 255, 0.08));
+  --assistant-bubble: linear-gradient(145deg, rgba(140, 183, 255, 0.14), rgba(255, 255, 255, 0.05));
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.34);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   color: var(--text);
+  font-family: "Noto Serif SC", "Microsoft YaHei", serif;
   background:
-    radial-gradient(circle at top left, rgba(157, 79, 45, 0.16), transparent 28%),
-    linear-gradient(160deg, #f5f0e6 0%, #ede4d4 100%);
+    radial-gradient(circle at 15% 20%, rgba(210, 176, 122, 0.16), transparent 22%),
+    radial-gradient(circle at 85% 10%, rgba(140, 183, 255, 0.15), transparent 20%),
+    linear-gradient(135deg, #030711 0%, #08111f 42%, #0f1e33 100%);
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.page-glow {
+  position: fixed;
+  inset: auto;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-glow-left {
+  top: -8rem;
+  left: -10rem;
+  background: rgba(210, 176, 122, 0.25);
+}
+
+.page-glow-right {
+  right: -12rem;
+  bottom: -10rem;
+  background: rgba(140, 183, 255, 0.18);
 }
 
 .app-shell {
-  width: min(920px, calc(100vw - 32px));
-  margin: 32px auto;
+  position: relative;
+  z-index: 1;
+  width: min(1440px, calc(100vw - 40px));
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.9fr) minmax(0, 1.35fr);
+  gap: 24px;
 }
 
-/* 聊天面板整体外观。 */
+.hero-panel,
 .chat-panel {
   border: 1px solid var(--panel-border);
-  border-radius: 24px;
-  background: var(--panel);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 18%),
+    var(--panel);
+  backdrop-filter: blur(24px);
   box-shadow: var(--shadow);
-  overflow: hidden;
+}
+
+.hero-panel {
+  padding: 38px 32px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 48px);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--gold-strong);
+  font-size: 12px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.hero-panel h1,
+.chat-header h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", "Times New Roman", serif;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.hero-panel h1 {
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 0.95;
+}
+
+.hero-copy {
+  margin: 22px 0 0;
+  max-width: 34ch;
+  color: var(--muted);
+  line-height: 1.9;
+  font-size: 15px;
+}
+
+.signal-card,
+.quick-prompts,
+.meta-card,
+.composer,
+.message {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.signal-card {
+  margin-top: 34px;
+  padding: 22px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(210, 176, 122, 0.08));
+}
+
+.signal-label,
+.section-kicker,
+.meta-label,
+.message-time,
+.input-hint,
+.char-count {
+  color: var(--muted);
+}
+
+.signal-label,
+.section-kicker {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.signal-list {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.signal-list li {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.signal-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.quick-prompts {
+  margin-top: auto;
+  padding: 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.section-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.prompt-grid {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+}
+
+.prompt-chip {
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(140, 183, 255, 0.06));
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.prompt-chip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(210, 176, 122, 0.48);
+  background: linear-gradient(135deg, rgba(210, 176, 122, 0.16), rgba(255, 255, 255, 0.08));
+}
+
+.chat-panel {
+  border-radius: 32px;
+  padding: 18px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  min-height: calc(100vh - 48px);
 }
 
 .chat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 24px 28px 18px;
-  border-bottom: 1px solid rgba(213, 200, 182, 0.8);
+  gap: 20px;
+  padding: 16px 16px 18px;
 }
 
-.eyebrow {
-  margin: 0 0 6px;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
+.chat-header h2 {
+  font-size: clamp(34px, 5vw, 52px);
 }
 
-.chat-header h1 {
-  margin: 0;
-  font-size: clamp(24px, 3vw, 34px);
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* 消息列表是一个纵向滚动区域。 */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: radial-gradient(circle, #7ef0bf 0%, #3dc98d 70%);
+  box-shadow: 0 0 14px rgba(126, 240, 191, 0.72);
+}
+
+.meta-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 0 16px 16px;
+}
+
+.meta-card {
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.meta-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 15px;
+  word-break: break-all;
+}
+
 .message-list {
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-height: 420px;
-  max-height: 62vh;
-  padding: 24px 28px;
-  overflow-y: auto;
+  gap: 16px;
+  padding: 8px 16px 16px;
+  min-height: 320px;
 }
 
 .message {
-  max-width: 78%;
-  padding: 14px 16px;
-  border-radius: 18px;
-  line-height: 1.65;
+  position: relative;
+  max-width: min(78%, 760px);
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  line-height: 1.9;
   white-space: pre-wrap;
+  animation: message-in 320ms ease;
 }
 
 .message p {
   margin: 0;
-}
-
-/* 用户消息靠右，助手消息靠左，形成典型聊天布局。 */
-.message.user {
-  align-self: flex-end;
-  background: var(--user-bubble);
 }
 
 .message.assistant {
@@ -96,128 +310,224 @@ body {
   background: var(--assistant-bubble);
 }
 
+.message.user {
+  align-self: flex-end;
+  background: var(--user-bubble);
+}
+
+.message-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--gold-strong);
+}
+
+.message-time {
+  display: block;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
 .composer {
+  margin: 0 16px 16px;
+  padding: 18px;
+  border-radius: 28px;
+  background: var(--panel-strong);
+}
+
+.composer-grid {
   display: grid;
   gap: 16px;
-  padding: 20px 28px 28px;
-  border-top: 1px solid rgba(213, 200, 182, 0.8);
-  background: rgba(255, 248, 239, 0.72);
 }
 
-.api-config,
-.question-box {
+.field {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
-.api-config span,
-.question-box span {
-  font-size: 13px;
+.field span {
   color: var(--muted);
-}
-
-input,
-textarea,
-button {
-  font: inherit;
+  font-size: 13px;
 }
 
 input,
 textarea {
   width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #cdbba4;
-  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-radius: 18px;
+  padding: 14px 16px;
   outline: none;
-  background: #fffdf9;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(245, 241, 232, 0.38);
 }
 
 input:focus,
 textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(157, 79, 45, 0.12);
+  border-color: rgba(210, 176, 122, 0.8);
+  box-shadow: 0 0 0 4px rgba(210, 176, 122, 0.12);
+  transform: translateY(-1px);
 }
 
 textarea {
+  min-height: 144px;
   resize: vertical;
-  min-height: 110px;
 }
 
 .composer-actions {
+  margin-top: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
+}
+
+.input-hint {
+  margin: 0;
+  max-width: 48ch;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.action-cluster {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.status-text {
-  margin: 0;
-  color: var(--muted);
-  font-size: 14px;
+.char-count {
+  font-size: 13px;
 }
 
 .primary-btn,
 .ghost-btn {
-  border: none;
-  border-radius: 999px;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+  transition: transform 180ms ease, opacity 180ms ease, background 180ms ease, border-color 180ms ease;
 }
 
 .primary-btn {
-  padding: 12px 22px;
-  color: #fff;
-  background: var(--primary);
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f0d4a0 0%, #c89b5a 100%);
+  color: #24180e;
+  font-weight: 700;
 }
 
 .primary-btn:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #f5ddb1 0%, #d6aa69 100%);
 }
 
 .ghost-btn {
-  padding: 10px 16px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--text);
-  background: rgba(213, 200, 182, 0.34);
 }
 
 .ghost-btn:hover {
-  background: rgba(213, 200, 182, 0.56);
+  transform: translateY(-2px);
+  border-color: rgba(210, 176, 122, 0.4);
+  background: rgba(210, 176, 122, 0.12);
 }
 
 .primary-btn:disabled,
-.ghost-btn:disabled {
-  opacity: 0.6;
+.ghost-btn:disabled,
+.prompt-chip:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
   transform: none;
 }
 
-/* 小屏下改成更紧凑的单列布局。 */
-@media (max-width: 700px) {
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1100px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-panel,
+  .chat-panel {
+    min-height: auto;
+  }
+
+  .hero-panel {
+    gap: 24px;
+  }
+
+  .quick-prompts {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 760px) {
   .app-shell {
     width: calc(100vw - 18px);
-    margin: 10px auto;
+    margin: 9px auto;
+    gap: 12px;
+  }
+
+  .hero-panel,
+  .chat-panel {
+    border-radius: 24px;
+  }
+
+  .hero-panel {
+    padding: 24px 18px;
+  }
+
+  .chat-panel {
+    padding: 10px;
   }
 
   .chat-header,
+  .meta-strip,
   .message-list,
   .composer {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
-  .chat-header {
-    align-items: flex-start;
+  .chat-header,
+  .composer-actions,
+  .header-actions {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .meta-strip {
+    grid-template-columns: 1fr;
   }
 
   .message {
     max-width: 100%;
   }
 
-  .composer-actions {
-    align-items: stretch;
+  .action-cluster {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .primary-btn,

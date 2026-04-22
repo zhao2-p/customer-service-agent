@@ -2,9 +2,12 @@ const messageList = document.getElementById("message-list");
 const chatForm = document.getElementById("chat-form");
 const queryInput = document.getElementById("query-input");
 const apiBaseInput = document.getElementById("api-base");
+const apiPreview = document.getElementById("api-preview");
 const statusText = document.getElementById("status-text");
 const sendButton = document.getElementById("send-btn");
 const clearButton = document.getElementById("clear-btn");
+const charCount = document.getElementById("char-count");
+const promptChips = document.querySelectorAll(".prompt-chip");
 
 const SESSION_STORAGE_KEY = "chat-session-id";
 const USER_STORAGE_KEY = "chat-user-id";
@@ -37,8 +40,6 @@ function getOrCreateSessionId() {
 }
 
 function getOrCreateUserId() {
-  // 长期记忆要绑定“用户”而不是“会话”，因此前端除了 session_id，
-  // 还要在本地长期保存一个稳定的 user_id，供每次请求一起带给后端。
   const savedUserId = window.localStorage.getItem(USER_STORAGE_KEY);
   if (savedUserId) {
     return savedUserId;
@@ -55,22 +56,49 @@ function resetSessionId() {
   return newSessionId;
 }
 
-// 前端不再维护完整 history，只保存用于绑定后端短期记忆的 session_id。
 let sessionId = getOrCreateSessionId();
-// user_id 用于绑定长期记忆，即使 session_id 重置，只要 user_id 不变，就仍然是同一个用户。
 const userId = getOrCreateUserId();
+
+function getTimestampLabel() {
+  const now = new Date();
+  return now.toLocaleTimeString("zh-CN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function updateApiPreview() {
+  const apiBase = apiBaseInput.value.trim() || "未设置";
+  apiPreview.textContent = apiBase.replace(/\/$/, "");
+}
+
+function updateCharCount() {
+  const count = queryInput.value.trim().length;
+  charCount.textContent = `${count} 字`;
+}
 
 function createMessage(role, content = "") {
   const article = document.createElement("article");
   article.className = `message ${role}`;
 
+  const badge = document.createElement("div");
+  badge.className = "message-badge";
+  badge.textContent = role === "user" ? "客户" : "AI 顾问";
+
   const paragraph = document.createElement("p");
   paragraph.textContent = content;
+
+  const time = document.createElement("time");
+  time.className = "message-time";
+  time.textContent = getTimestampLabel();
+
+  article.appendChild(badge);
   article.appendChild(paragraph);
+  article.appendChild(time);
 
   messageList.appendChild(article);
   messageList.scrollTop = messageList.scrollHeight;
-  return { article, paragraph };
+  return { article, paragraph, time };
 }
 
 function renderMessage(role, content) {
@@ -81,7 +109,13 @@ function setSubmitting(isSubmitting) {
   sendButton.disabled = isSubmitting;
   clearButton.disabled = isSubmitting;
   queryInput.disabled = isSubmitting;
-  statusText.textContent = isSubmitting ? "正在流式接收后端响应..." : "等待输入";
+  apiBaseInput.disabled = isSubmitting;
+
+  for (const chip of promptChips) {
+    chip.disabled = isSubmitting;
+  }
+
+  statusText.textContent = isSubmitting ? "正在连接智能客服引擎..." : "等待输入";
 }
 
 function readSseChunk(buffer) {
@@ -96,23 +130,22 @@ function readSseChunk(buffer) {
   return { rawEvent, rest };
 }
 
-chatForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const query = queryInput.value.trim();
-  if (!query) {
-    statusText.textContent = "请输入问题";
+async function submitQuery(query) {
+  const normalizedQuery = query.trim();
+  if (!normalizedQuery) {
+    statusText.textContent = "请输入咨询内容";
     return;
   }
 
   const apiBase = apiBaseInput.value.trim().replace(/\/$/, "");
-  const payload = { query, session_id: sessionId, user_id: userId };
+  const payload = { query: normalizedQuery, session_id: sessionId, user_id: userId };
 
-  renderMessage("user", query);
+  renderMessage("user", normalizedQuery);
   queryInput.value = "";
+  updateCharCount();
   setSubmitting(true);
 
-  const assistantMessage = createMessage("assistant", "正在思考中...");
+  const assistantMessage = createMessage("assistant", "正在分析你的问题，并准备生成专业答复...");
   let finalAnswer = "";
   let streamedAnswer = "";
   let hasStartedStreaming = false;
@@ -163,11 +196,10 @@ chatForm.addEventListener("submit", async (event) => {
 
         if (eventData.type === "snapshot") {
           assistantMessage.paragraph.textContent = eventData.content;
-          statusText.textContent = "模型正在生成...";
+          statusText.textContent = "正在整理分析路径...";
         }
 
         if (eventData.type === "delta") {
-          // 收到最终答案的首个增量片段后，先清掉“正在思考中...”，再逐字追加到当前消息中。
           if (!hasStartedStreaming) {
             streamedAnswer = "";
             assistantMessage.paragraph.textContent = "";
@@ -176,7 +208,7 @@ chatForm.addEventListener("submit", async (event) => {
 
           streamedAnswer += eventData.content || "";
           assistantMessage.paragraph.textContent = streamedAnswer;
-          statusText.textContent = "模型正在生成...";
+          statusText.textContent = "正在生成最终回复...";
         }
 
         if (eventData.type === "final") {
@@ -184,27 +216,50 @@ chatForm.addEventListener("submit", async (event) => {
           assistantMessage.paragraph.textContent = finalAnswer;
           statusText.textContent = "响应完成";
         }
+
+        messageList.scrollTop = messageList.scrollHeight;
       }
     }
 
     if (!finalAnswer) {
       finalAnswer = assistantMessage.paragraph.textContent.trim() || "后端返回了空结果。";
       assistantMessage.paragraph.textContent = finalAnswer;
+      statusText.textContent = "响应完成";
     }
   } catch (error) {
-    const errorText = `请求失败：${error.message}`;
-    assistantMessage.paragraph.textContent = errorText;
+    assistantMessage.paragraph.textContent = `请求失败：${error.message}`;
     statusText.textContent = "请求失败";
   } finally {
     setSubmitting(false);
+    queryInput.focus();
   }
+}
+
+chatForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await submitQuery(queryInput.value);
 });
 
 clearButton.addEventListener("click", () => {
-  // 重置 session_id 等价于开启一个新的后端会话 thread。
-  // 这里不清理 user_id，因为“清空会话”不应该顺手抹掉长期记忆绑定的用户身份。
   sessionId = resetSessionId();
   messageList.innerHTML = "";
-  renderMessage("assistant", "会话已清空，可以开始新的问题。");
-  statusText.textContent = "已清空会话";
+  renderMessage("assistant", "新会话已建立。你可以继续咨询产品、故障、保养建议或月度报告。");
+  statusText.textContent = "已切换到新会话";
+  queryInput.value = "";
+  updateCharCount();
+  queryInput.focus();
 });
+
+queryInput.addEventListener("input", updateCharCount);
+apiBaseInput.addEventListener("input", updateApiPreview);
+
+for (const chip of promptChips) {
+  chip.addEventListener("click", () => {
+    queryInput.value = chip.dataset.prompt || "";
+    updateCharCount();
+    queryInput.focus();
+  });
+}
+
+updateApiPreview();
+updateCharCount();
